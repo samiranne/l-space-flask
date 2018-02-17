@@ -1,0 +1,9 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+            <div class="flash {{ category }}"><span class="align-left">{{ category }}</span><span class="align-center">{{ message }}</span><span class="align-right">x</span></div>
+    {% endfor %}
+{% endwith %}
+{#
+<div class="flash success"><span class="align-left">success</span><span class="align-center">test flash message 1</span><span class="align-right">x</span></div>
+<div class="flash error"><span class="align-left">error</span><span class="align-center">test flash message 2</span><span class="align-right">x</span></div>
+#}

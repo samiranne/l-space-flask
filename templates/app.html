@@ -1,0 +1,9 @@
+{% extends 'default.html' %}
+
+{# if I want to override, e.g., the title, use: {% set title = 'index' %} #}
+
+{% block body %}
+    {% if current_user.is_authenticated %}
+        <h1>user: {{ current_user.email }}</h1>
+    {% endif %}
+{% endblock %}

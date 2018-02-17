@@ -1,0 +1,7 @@
+{% extends "default.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block body %}
+  <h1>Internal Server Error</h1>
+  <p>WTF?: "{{ error }}"</p>
+  <p><a href="{{ url_for('home') }}">go somewhere nice</a></p>
+{% endblock %}
