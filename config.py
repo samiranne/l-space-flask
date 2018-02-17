@@ -6,18 +6,14 @@ class Config(object):
 
 class SiteConfig:
     # these config values are used in the templates (e.g. open graph, twitter)
-    SITE_NAME = "Flask Template"
-    SITE_DESCRIPTION = "This site is a flask template designed for postgres/heroku."
-    SITE_KEYWORDS = "flask, postgres, heroku"
-    SITE_OWNER = "SHANE KERCHEVAL"
-    SITE_EMAIL = "shane.kercheval@yahoo.com"
+    SITE_NAME = "Godric's Hollow Library"
+    # SITE_DESCRIPTION = "This site is a flask template designed for postgres/heroku."
+    SITE_KEYWORDS = "library, rationalist"
+    SITE_OWNER = "Chelsea Voss and Samira Nedungadi"
 
     SITE_IMAGE = "img/logo.png"
     SITE_IMAGE_WIDTH = 600
     SITE_IMAGE_HEIGHT = 315
-
-    SITE_TWITTER_USERNAME = "ShaneKercheval"
-    SITE_GITHUB_USERNAME = "shane-kercheval"
 
 
 class ProductionConfig(Config, SiteConfig):

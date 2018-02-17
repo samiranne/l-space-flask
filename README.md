@@ -11,16 +11,27 @@ One-time setup
 - Install virtualenv
 
 ```
+pip3 install virtualenv
 virtualenv .venv
-source .venv/bin/activate
+source .venv/bin/activate # if using a Windows Command Line, just run .venv/Scripts/activate
 pip3 install -r requirements.txt
 ```
 
 Every time you enter the directory
 ---
 
+Run venv to create the virtual environment.
+
 ```
-source .venv/bin/activate
+source .venv/bin/activate # if using a Windows Command Line, just run .venv/Scripts/activate
+```
+
+Verify that the above command ran successfully by checking that `(.venv)` is prepended to your bash prompt.
+
+When exiting the directory, run this command to exit the virtual environment:
+
+```
+deactivate
 ```
 
 To run the app locally
