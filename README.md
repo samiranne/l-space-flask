@@ -39,7 +39,14 @@ TODO: run dev env database setup before these will pass
 python3 -m unittest tests.test_app
 ```
 
-To deploy
+To deploy (one-time setup)
+---
+
+```
+heroku git:remote -a rationalist-library
+```
+
+To deploy (each time)
 ---
 
 ```
