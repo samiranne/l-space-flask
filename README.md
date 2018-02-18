@@ -63,3 +63,18 @@ To deploy (each time)
 ```
 git push heroku master
 ```
+
+
+To manage the db
+---
+```
+heroku run "python manage.py db --help"
+```
+
+To create the Users table in the prod db, I had to run:
+```
+heroku run "python manage.py db upgrade"
+```
+
+I expect we'll have to run this after adding any new db models. Note that there
+are alembic upgrade files in migrations/versions that applied these upgrades.
