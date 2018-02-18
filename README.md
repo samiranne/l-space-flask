@@ -78,3 +78,8 @@ heroku run "python manage.py db upgrade"
 
 I expect we'll have to run this after adding any new db models. Note that there
 are alembic upgrade files in migrations/versions that applied these upgrades.
+
+
+View error logs
+---
+https://dashboard.heroku.com/apps/rationalist-library/logs
