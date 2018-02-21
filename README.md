@@ -13,7 +13,7 @@ One-time setup
 ```
 pip3 install virtualenv
 virtualenv .venv
-source .venv/bin/activate # if using a Windows Command Line, just run .venv/Scripts/activate
+source .venv/bin/activate # if using a Windows Command Line, run .venv/Scripts/activate instead
 pip3 install -r requirements.txt
 ```
 
@@ -23,7 +23,7 @@ Every time you enter the directory
 Run venv to create the virtual environment.
 
 ```
-source .venv/bin/activate # if using a Windows Command Line, just run .venv/Scripts/activate
+source .venv/bin/activate # if using a Windows Command Line, run .venv/Scripts/activate instead
 ```
 
 Verify that the above command ran successfully by checking that `(.venv)` is prepended to your bash prompt.
@@ -40,6 +40,13 @@ TODO: add instructions for how to set up local postgres here, so that you can te
 
 ```
 heroku local
+```
+
+
+Or, run through python:
+
+```
+python app.py # On Windows, use py -3 app.py
 ```
 
 To run the tests
