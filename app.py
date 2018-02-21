@@ -2,7 +2,7 @@ from flask import flash, request, redirect, url_for, abort
 from flask import render_template
 from flask.ext.login import login_required, login_user, logout_user
 from app_factory import app, db, login_manager
-from models import User
+from models import *
 from forms import LoginForm, RegistrationForm
 
 
@@ -69,6 +69,16 @@ def app_default():
     return render_template('app.html')
 
 
+@app.route('/books', methods=['GET'])
+def books():
+    # author = Author(name='Neil Gaiman')
+    # book = Book(title='Coraline', google_books_id='QSuPPwAACAAJ',
+    #             authors=[author]) 
+    # books = [book] # works with fake data
+    books = Book.get_all_books()
+    return render_template('books.html', books=books)
+
+
 @login_manager.user_loader
 def load_user(userid):
     return User.get_user_by_id(userid)
@@ -95,9 +105,10 @@ def add_to_database(object):
     db.session.add(object)
     db.session.commit()
 
+
 if __name__ == '__main__':
-    print("DATABASE_URL: "+app.config['SQLALCHEMY_DATABASE_URI'])
-    print("DEBUG: "+str(app.config['DEBUG']))
+    print("DATABASE_URL: " + app.config['SQLALCHEMY_DATABASE_URI'])
+    print("DEBUG: " + str(app.config['DEBUG']))
     app.run()
 """
 When the Python interpreter reads a source file, it executes all of the code
