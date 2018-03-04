@@ -5,11 +5,24 @@ from app_factory import db, bcrypt
 # http://flask-sqlalchemy.pocoo.org/2.3/models/
 
 
+book_users = db.Table('book_users', db.Model.metadata,
+                        db.Column('book_id', db.Integer, db.ForeignKey(
+                            'books.id'), primary_key=True),
+                        db.Column('user_id', db.Integer, db.ForeignKey(
+                            'users.id'), primary_key=True)
+                        # , db.Column('current_holder', db.Integer, db.ForeignKey(
+                        #     'users.id'))
+                        )
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(), unique=True)
     password = db.Column(db.LargeBinary(255))
+    display_name = db.Column(db.String(), unique=True)
+    books = db.relationship('Book', secondary=book_users, lazy=True,
+                           backref=db.backref('books', lazy=True))
+
 
     @staticmethod
     def get_user_by_email(email):
@@ -32,24 +45,12 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
-
-book_authors = db.Table('book_authors', db.Model.metadata,
-                        db.Column('book_id', db.Integer, db.ForeignKey(
-                            'books.id'), primary_key=True),
-                        db.Column('author_id', db.Integer, db.ForeignKey(
-                            'authors.id'), primary_key=True)
-                        )
-
-
 class Book(db.Model):
     __tablename__ = 'books'
     id = db.Column(db.Integer, primary_key=True)
     google_books_id = db.Column(db.String(), unique=True, nullable=False)
     title = db.Column(db.String(), nullable=False)
-    authors = db.relationship('Author', secondary=book_authors, lazy=True,
-                              backref=db.backref('books', lazy=True)
-                              )
-    # TODO add from Google API: image_link, categories
+    authors = db.Column(db.String())  
 
     def __repr__(self):
         return 'Book({})'.format(self.title)
@@ -59,7 +60,16 @@ class Book(db.Model):
         return Book.query.order_by(Book.title).all()
 
 
-class Author(db.Model):
-    __tablename__ = 'authors'
+house_users = db.Table('house_users', db.Model.metadata,
+                        db.Column('house_id', db.Integer, db.ForeignKey(
+                            'houses.id'), primary_key=True),
+                        db.Column('user_id', db.Integer, db.ForeignKey(
+                            'users.id'), primary_key=True)
+                        )
+
+class House(db.Model):
+    __tablename__ = 'houses'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
+    name = db.Column(db.Integer, nullable=False)
+    users = db.relationship('User', secondary=house_users, lazy=True,
+                           backref=db.backref('users', lazy=True))
