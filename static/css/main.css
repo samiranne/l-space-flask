@@ -103,6 +103,30 @@ a:visited {
     margin: 0px;
 }
 /*************
+** TABLES
+**************/
+.book-table {
+    margin-top: 1em;
+}
+
+.book-table td, .book-table th {
+    padding: 0.5em 1em 0.5em 0.5em;  
+    text-align: left;
+}
+
+.book-table th {
+    font-weight: bold;
+}
+
+.book-table tr:nth-child(odd) {
+    background: #F0F0F0;
+}
+
+.book-table tr:nth-child(even) {
+    background: #FFF;
+}
+
+/*************
 ** FOOTER
 **************/
 #footer
