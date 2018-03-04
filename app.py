@@ -4,7 +4,8 @@ from flask.ext.login import login_required, login_user, logout_user
 from app_factory import app, db, login_manager
 from models import *
 from forms import LoginForm, RegistrationForm
-
+from json import dumps, loads
+import requests
 
 @app.before_request
 def before_request():
@@ -76,7 +77,29 @@ def books():
     #             authors=[author]) 
     # books = [book] # works with fake data
     books = Book.get_all_books()
-    return render_template('books.html', books=books)
+    return render_template('books/index.html', books=books)
+
+
+# TODO uncomment once Google Books API key is set up
+# @app.route('/books/search', methods=['GET'])
+# def search_books():
+#     query = request.args.get("query")
+#     books = []
+#     response_body = {}
+#     if query:
+#         response = requests.get("https://www.googleapis.com/books/v1/volumes?q={}".format(query))
+#         response_body = response.json()
+#         for item in response_body["items"]:
+#             google_books_id = item["id"]
+#             volume_info = item["volumeInfo"]
+#             author_list = volume_info.get("authors") # todo why?
+#             if author_list:
+#                 authors = [Author(name=s) for s in author_list]
+#             else:
+#                 authors = []
+#             title = volume_info["title"]     
+#             books.append(Book(title=title, google_books_id=google_books_id, authors=authors))
+#     return render_template('books/search.html', books=books, response_body=response_body)
 
 
 @login_manager.user_loader
@@ -86,7 +109,7 @@ def load_user(userid):
 
 # @login_manager.unauthorized_handler
 # def unauthorized():
-#    flash(message='You must be logged in to do that!', category='error')
+#    flash(methodsssage='You must be logged in to do that!', category='error')
 #    return 200
 
 
