@@ -1,4 +1,4 @@
-"""empty message
+"""Create tables for books and houses
 
 Revision ID: b6673fe8ed45
 Revises: 13793c6c6527

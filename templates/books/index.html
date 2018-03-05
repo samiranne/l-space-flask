@@ -1,28 +1,12 @@
 {% extends 'default.html' %}
 
 {% block body %}
-    <h1>All Books</h1>
+    <h1>Godric's Hollow's Books</h1>
     <form>
-    	 <legend>Search for a book:</legend>
     	<input type="text" name="query">
-    	<input type="submit">
+    	<input type="submit" value="Search">
     </form>
-    <table class="book-table">
-		<tr>
-			<th>Title</th>
-			<th>Authors</th>
-		</tr>
-		{% for book in books %}
-		<tr>
-		   <td>{{book.title}}</td>
-		   <td>
-				{% set comma = joiner(",") %}    
-				{% for author in book.authors %}
-				    {{ comma() }}
-				    {{ author.name }}
-				{% endfor %}
-			</td>
-		</tr>
-		{% endfor %}
-	</table>
+    {% if books %}
+    	{% include 'books/book_table.html' %}
+    {% endif %}
 {% endblock %}

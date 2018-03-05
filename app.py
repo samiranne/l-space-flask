@@ -5,7 +5,12 @@ from app_factory import app, db, login_manager
 from models import *
 from forms import LoginForm, RegistrationForm
 from json import dumps, loads
-import requests
+import google_books_service
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 @app.before_request
 def before_request():
@@ -72,45 +77,35 @@ def app_default():
 
 @app.route('/books', methods=['GET'])
 def books():
-    # author = Author(name='Neil Gaiman')
-    # book = Book(title='Coraline', google_books_id='QSuPPwAACAAJ',
-    #             authors=[author]) 
-    # books = [book] # works with fake data
     books = Book.get_all_books()
     return render_template('books/index.html', books=books)
 
 
-# TODO uncomment once Google Books API key is set up
-# @app.route('/books/search', methods=['GET'])
-# def search_books():
-#     query = request.args.get("query")
-#     books = []
-#     response_body = {}
-#     if query:
-#         response = requests.get("https://www.googleapis.com/books/v1/volumes?q={}".format(query))
-#         response_body = response.json()
-#         for item in response_body["items"]:
-#             google_books_id = item["id"]
-#             volume_info = item["volumeInfo"]
-#             author_list = volume_info.get("authors") # todo why?
-#             if author_list:
-#                 authors = [Author(name=s) for s in author_list]
-#             else:
-#                 authors = []
-#             title = volume_info["title"]     
-#             books.append(Book(title=title, google_books_id=google_books_id, authors=authors))
-#     return render_template('books/search.html', books=books, response_body=response_body)
+@app.route('/books/search', methods=['GET'])
+def search_books():
+    query = request.args.get("query")
+    books = []
+    if query:
+        # try:
+        books = google_books_service.search_books(query)
+        # except Exception as ex:
+        #     render_template('internal_server_error.html', error=ex)
+    return render_template('books/search.html', books=books)
 
+# @app.route('/books/add', methods=['POST'])
+# def add_book():
+#     query = request.form.get("book")
+#     logger.debug(query)
 
 @login_manager.user_loader
 def load_user(userid):
     return User.get_user_by_id(userid)
 
 
-# @login_manager.unauthorized_handler
-# def unauthorized():
-#    flash(methodsssage='You must be logged in to do that!', category='error')
-#    return 200
+@login_manager.unauthorized_handler
+def unauthorized():
+   flash(message='You must be logged in to do that!', category='error')
+   return 200
 
 
 @app.errorhandler(404)
@@ -118,10 +113,10 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 
-# COMMENT THIS CODE OUT FOR PRODUCTION, OR DON'T DISPLAY THE ERROR
-@app.errorhandler(500)
-def page_not_found(error):
-    return render_template('internal_server_error.html', error=error), 500
+# # COMMENT THIS CODE OUT FOR PRODUCTION, OR DON'T DISPLAY THE ERROR
+# @app.errorhandler(500)
+# def page_not_found(error):
+#     return render_template('internal_server_error.html', error=error), 500
 
 
 def add_to_database(object):

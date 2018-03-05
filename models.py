@@ -50,7 +50,8 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     google_books_id = db.Column(db.String(), unique=True, nullable=False)
     title = db.Column(db.String(), nullable=False)
-    authors = db.Column(db.String())  
+    authors = db.Column(db.String())
+    thumbnail_link = db.Column(db.String()) 
 
     def __repr__(self):
         return 'Book({})'.format(self.title)

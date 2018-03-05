@@ -106,7 +106,7 @@ a:visited {
 ** TABLES
 **************/
 .book-table {
-    margin-top: 1em;
+    margin: 1em auto;
 }
 
 .book-table td, .book-table th {
@@ -116,14 +116,7 @@ a:visited {
 
 .book-table th {
     font-weight: bold;
-}
-
-.book-table tr:nth-child(odd) {
     background: #F0F0F0;
-}
-
-.book-table tr:nth-child(even) {
-    background: #FFF;
 }
 
 /*************

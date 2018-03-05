@@ -3,6 +3,7 @@ import os
 class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', "postgresql://library:godrics@localhost/library_dev") #defaults to localhost
     SECRET_KEY = "d97a21fb8e3d2b329b9278d1b66285af" # use the following in terminal to generate: "cat /dev/urandom | env LC_CTYPE=C tr -cd 'a-f0-9' | head -c 32"
+    GOOGLE_BOOKS_API_KEY = "AIzaSyBYhBTKNfv4JAw_f1xSpBXJ5v2wXazr1sw"
 
 class SiteConfig:
     # these config values are used in the templates (e.g. open graph, twitter)
