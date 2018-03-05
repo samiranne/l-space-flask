@@ -8,5 +8,7 @@
     </form>
     {% if books %}
     	{% include 'books/book_table.html' %}
-    {% endif %}
+   	{% else %}
+   		<p>This house hasn't listed any books yet :(</p>
+  	{% endif %}
 {% endblock %}
