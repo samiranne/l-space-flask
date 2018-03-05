@@ -2,9 +2,15 @@ from flask import flash, request, redirect, url_for, abort
 from flask import render_template
 from flask.ext.login import login_required, login_user, logout_user
 from app_factory import app, db, login_manager
-from models import User
+from models import *
 from forms import LoginForm, RegistrationForm
+from json import dumps, loads
+import google_books_service
+import logging
 
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 @app.before_request
 def before_request():
@@ -69,15 +75,37 @@ def app_default():
     return render_template('app.html')
 
 
+@app.route('/books', methods=['GET'])
+def books():
+    books = Book.get_all_books()
+    return render_template('books/index.html', books=books)
+
+
+@app.route('/books/search', methods=['GET'])
+def search_books():
+    query = request.args.get("query")
+    books = []
+    if query:
+        # try:
+        books = google_books_service.search_books(query)
+        # except Exception as ex:
+        #     render_template('internal_server_error.html', error=ex)
+    return render_template('books/search.html', books=books)
+
+# @app.route('/books/add', methods=['POST'])
+# def add_book():
+#     query = request.form.get("book")
+#     logger.debug(query)
+
 @login_manager.user_loader
 def load_user(userid):
     return User.get_user_by_id(userid)
 
 
-# @login_manager.unauthorized_handler
-# def unauthorized():
-#    flash(message='You must be logged in to do that!', category='error')
-#    return 200
+@login_manager.unauthorized_handler
+def unauthorized():
+   flash(message='You must be logged in to do that!', category='error')
+   return 200
 
 
 @app.errorhandler(404)
@@ -85,19 +113,20 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 
-# COMMENT THIS CODE OUT FOR PRODUCTION, OR DON'T DISPLAY THE ERROR
-@app.errorhandler(500)
-def page_not_found(error):
-    return render_template('internal_server_error.html', error=error), 500
+# # COMMENT THIS CODE OUT FOR PRODUCTION, OR DON'T DISPLAY THE ERROR
+# @app.errorhandler(500)
+# def page_not_found(error):
+#     return render_template('internal_server_error.html', error=error), 500
 
 
 def add_to_database(object):
     db.session.add(object)
     db.session.commit()
 
+
 if __name__ == '__main__':
-    print("DATABASE_URL: "+app.config['SQLALCHEMY_DATABASE_URI'])
-    print("DEBUG: "+str(app.config['DEBUG']))
+    print("DATABASE_URL: " + app.config['SQLALCHEMY_DATABASE_URI'])
+    print("DEBUG: " + str(app.config['DEBUG']))
     app.run()
 """
 When the Python interpreter reads a source file, it executes all of the code

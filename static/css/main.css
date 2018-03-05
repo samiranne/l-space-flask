@@ -103,6 +103,23 @@ a:visited {
     margin: 0px;
 }
 /*************
+** TABLES
+**************/
+.book-table {
+    margin: 1em auto;
+}
+
+.book-table td, .book-table th {
+    padding: 0.5em 1em 0.5em 0.5em;  
+    text-align: left;
+}
+
+.book-table th {
+    font-weight: bold;
+    background: #F0F0F0;
+}
+
+/*************
 ** FOOTER
 **************/
 #footer
@@ -110,15 +127,12 @@ a:visited {
     border-top: 2px solid #EDEFF0;
     margin-top: 50px;
     padding: 30px 0;
-    font-size: 0.9em;
+    font-size: 0.7em;
     text-align: center;
     color: #828282;
 
 }
-#copyright {
-    text-align: center;
-    font-size: 0.8em;
-}
+
 /*************
 ** HEADER
 **************/

@@ -17,6 +17,26 @@ source .venv/bin/activate # if using a Windows Command Line, run .venv/Scripts/a
 pip3 install -r requirements.txt
 ```
 
+
+One-time setup for database
+---
+
+Install Postgres 10. Once it's installed, run `psql`. (On Windows, you will first need to add C:\Program Files\PostgreSQL\10\scripts to your path, and then run the command `runpsql`). You will be prompted to enter a server, database, port and username. Use the defaults provided by the prompts. Then run:
+
+```
+create database library_dev
+create user library with superuser password 'godrics'
+```
+
+Verify that your database name ("library_dev"), username ("library"), and password ("godrics") match that specified in `SQLALCHEMY_DATABASE_URI` in `config.py`.
+
+Now, set up the tables:
+
+```
+python manage.py db migrate # creates migration scripts for tables in models.py
+python manage.py db ugrade # runs migration scripts
+```
+
 Every time you enter the directory
 ---
 

@@ -1,0 +1,14 @@
+{% extends 'default.html' %}
+
+{% block body %}
+    <h1>Godric's Hollow's Books</h1>
+    <form>
+    	<input type="text" name="query">
+    	<input type="submit" value="Search">
+    </form>
+    {% if books %}
+    	{% include 'books/book_table.html' %}
+   	{% else %}
+   		<p>This house hasn't listed any books yet :(</p>
+  	{% endif %}
+{% endblock %}

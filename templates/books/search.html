@@ -1,0 +1,19 @@
+{% extends 'default.html' %}
+
+
+{% block body %}
+    <h1>Add A Book</h1>
+    <!-- <p>{{response_body}}</p> -->
+    <form action="/books/search">
+    	<input type="text" name="query">
+    	<input type="submit" value="Search">
+    </form>
+    {% if books %}
+    {% with show_add_buttons = True %}
+    	{% include 'books/book_table.html' %}
+    {% endwith %}
+    {% endif %}
+{% endblock %}
+
+
+
