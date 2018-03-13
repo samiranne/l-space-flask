@@ -82,32 +82,53 @@ def settings():
 
 ### BOOKS ###
 
-@app.route('/books/add', methods=['GET'])
-def add_book():
+@app.route('/books/search', methods=['GET'])
+def search_books():
     query = request.args.get("query")
     books = []
     if query:
         books = google_books_service.search_books(query)
-    return render_template('books/add.html', books=books)
+    return render_template('books/search.html', books=books)
+
+@app.route('/books/add/', methods=['POST'])
+def add_book():
+    # TODO accept a json body in the POST request, with all 
+    # the data we need to create a new Book in our table.
+    pass
 
 ### HOUSES ###
 
-@app.route('/houses/<house_id>', methods=['GET'])
-def house(house_id):
-    house = House.get_house_by_id(house_id)
-    house_books = house.get_all_books()
+@app.route('/houses/', methods=['GET'])
+def houses():
+    # TODO for now, redirect to Godric's house id page.
+    books = []
+    return render_template('houses/id.html', books=books)
+
+@app.route('/houses/<int:house_id>', methods=['GET'])
+def house(house_id=None):
+    house_books = []
+    if house_id is not None and len(house_id) > 0:
+        house = House.get_house_by_id(house_id)
+        house_books = house.get_all_books()
     return render_template('houses/id.html', books=house_books)
 
-@app.route('/houses/<house_id>/members', methods=['GET'])
+@app.route('/houses/<int:house_id>/members', methods=['GET'])
 def house_members(house_id):
     house = House.get_house_by_id(house_id)
     house_members = house.members
     return render_template('houses/members.html', members=house_members)
 
-app.route('/houses/add', methods=['GET', 'POST'])
-def add_house(house_id):
-    pass # TODO logic for creating a new house
-    # return render_template('houses/add.html', house=house)
+# @app.route('/houses/add', methods=['GET', 'POST'])
+# def add_house():
+    # if request.method == 'POST':
+    #     # try:
+    #     house_name = request.form['name']
+    #     house = House(name=house_name)
+    #     add_to_database(house)
+    #     flash('Created a new house "%s"' % house_name, category='success')
+    #     # except: # TODO what exceptions to catch here?
+    #     #     flash('An error occurred', category='error')
+    # return render_template('houses/add.html')
 
 ### USERS ###
 
