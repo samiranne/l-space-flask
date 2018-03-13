@@ -74,3 +74,11 @@ class House(db.Model):
     name = db.Column(db.Integer, nullable=False)
     users = db.relationship('User', secondary=house_users, lazy=True,
                            backref=db.backref('users', lazy=True))
+
+    @staticmethod
+    def get_house_by_id(id):
+        return House.query.get(id)
+
+    def get_all_books():
+        return [] # TODO query join users -> books
+        # return Book.query.order_by(Book.title).all()

@@ -74,28 +74,58 @@ def logout():
 def app_default():
     return render_template('app.html')
 
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    pass # TODO allow user to get or modify their settings.
 
-@app.route('/books', methods=['GET'])
-def books():
-    books = Book.get_all_books()
-    return render_template('books/index.html', books=books)
 
+### BOOKS ###
 
-@app.route('/books/search', methods=['GET'])
-def search_books():
+@app.route('/books/add', methods=['GET'])
+def add_book():
     query = request.args.get("query")
     books = []
     if query:
-        # try:
         books = google_books_service.search_books(query)
-        # except Exception as ex:
-        #     render_template('internal_server_error.html', error=ex)
-    return render_template('books/search.html', books=books)
+    return render_template('books/add.html', books=books)
 
-# @app.route('/books/add', methods=['POST'])
-# def add_book():
-#     query = request.form.get("book")
-#     logger.debug(query)
+### HOUSES ###
+
+@app.route('/houses/<house_id>', methods=['GET'])
+def house(house_id):
+    house = House.get_house_by_id(house_id)
+    house_books = house.get_all_books()
+    return render_template('houses/id.html', books=house_books)
+
+@app.route('/houses/<house_id>/members', methods=['GET'])
+def house_members(house_id):
+    house = House.get_house_by_id(house_id)
+    house_members = house.members
+    return render_template('houses/members.html', members=house_members)
+
+app.route('/houses/add', methods=['GET', 'POST'])
+def add_house(house_id):
+    pass # TODO logic for creating a new house
+    # return render_template('houses/add.html', house=house)
+
+### USERS ###
+
+@app.route('/users/<user_id>', methods=['GET'])
+def user(user_id):
+    user = User.get_user_by_id(user_id)
+    return render_template('users/id.html', user=user)
+
+@app.route('/users/book_copies/<book_copy_id>', methods=['GET'])
+def user_book_copy(book_copy_id):
+    pass 
+    # TODO:
+    #   Add a unique primary key for user_books table. 
+    #   Get a user_book entry by id, and return it.
+    # return render_template('users/book_copy_id.html', book=book)
+
+
+### HANDLERS ###
 
 @login_manager.user_loader
 def load_user(userid):

@@ -1,3 +1,4 @@
+<body>
 <table class="book-table">
 	<tr>
 		<th></th>
@@ -9,26 +10,29 @@
 	   <td><img src="{{ book.thumbnail_link }}" class="thumbnail" /></td>
 	   <td>{{book.title}}</td>
 	   <td>{{book.authors}}</td>
-<!-- 	   {% if show_add_buttons %}
+	   {% if show_add_buttons %}
 			<td>
-		   	<form class="add-book-form" action="/books/add" method="POST">
-		   		<input type="hidden" name="book" value="{{book}}"/>
-		   		<input type="submit" value="Add" />
+		   	<form id="{{ book.title }}" class="add-book-form" action="/books/add" method="POST">
+		   		<input type="hidden" id="book" value="{{book}}"/>
+		   		<input type="button" value="Add" onclick="addBook( />
 		   		</form>
 		   	</td>	   
-	   	{% endif %} -->
+	   	{% endif %}
 	</tr>
 	{% endfor %}
 </table>
 
-<!-- <script>
-	alert('k1');
- // wait for the DOM to be loaded
- $(function() {
- 	alert('k');
-   // bind 'myForm' and provide a simple callback function
-   $('.add-book-form').ajaxForm(function() {
-       alert("Thank you for your comment!");
-   });
- });
-</script> -->
+<script>
+	function addBook() {
+
+	}
+ // // wait for the DOM to be loaded
+ // $(function() {
+ // 	alert("Add book clicked");
+ //   // bind 'myForm' and provide a simple callback function
+ //   $('.add-book-form').ajaxForm(function() {
+ //       alert("Book added!");
+ //   });
+ // });
+</script>
+</body>
