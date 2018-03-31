@@ -4,7 +4,6 @@ from flask.ext.login import login_required, login_user, logout_user
 from app_factory import app, db, login_manager
 from models import *
 from forms import LoginForm, RegistrationForm
-from json import dumps, loads
 import google_books_service
 import logging
 
@@ -31,11 +30,13 @@ def home(name="default", test="default"):
 def register():
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
-        user = User(email=form.email.data, password=form.password.data)
+        user = User(email=form.email.data, password=form.password.data,
+                    display_name=form.display_name.data)
         add_to_database(user)
         login_user(user, remember=True)
-        flash('Welcome!', category='success')
-        return redirect(url_for('app_default'))
+        flash('Welcome, {0}!'.format(form.display_name.data),
+              category='success')
+        return redirect(url_for('home'))
     return render_template('register.html', form=form)
 
 
@@ -50,7 +51,7 @@ def login():
         # WE ARE CURRRENTLY ASSUMING 'next' IS VALID. IF PERMISSIONS ARE ADDED
         # LATER, THEN WE SHOULD ADD ADDITIONAL VALIDATION
 
-        return redirect(next or url_for('app_default'))
+        return redirect(next or url_for('home'))
     return render_template('login.html', form=form)
 
 
@@ -58,7 +59,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash(message=u'You have logged out. Hope to see you soon!',
+    flash(message=u'You have logged out.',
           category='success')
     return render_template('index.html')
 
@@ -68,6 +69,7 @@ def logout():
 def app_default():
     return render_template('app.html')
 
+
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
@@ -75,6 +77,7 @@ def settings():
 
 
 ### BOOKS ###
+
 
 @app.route('/books/search', methods=['GET'])
 def search_books():
@@ -87,10 +90,8 @@ def search_books():
 
 @app.route('/books/add', methods=['POST'])
 def add_book():
-    # TODO accept a json body in the POST request, with all
-    # the data we need to create a new Book in our table.
-    pass
-
+    logger.debug(request.form)
+    return 'ok'
 ### HOUSES ###
 
 
@@ -156,7 +157,7 @@ def load_user(userid):
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    flash(message='You must be logged in to do that!', category='error')
+    flash(message='You must be logged in to do that.', category='error')
     return 200
 
 

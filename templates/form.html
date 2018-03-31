@@ -1,11 +1,23 @@
 {% macro render(form) %}
+    <div class="container">
     {{ form.csrf_token }}
     {{ form.hidden_tag() }}
-    {% for field in form if field.widget.input_type != 'hidden' %}
-        {{ field.label }}
-        {{ field(**kwargs)|safe }}
-        {% for error in field.errors %}
-            <div class="form_field_errors flash">{{ error }}</div>
+
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            <div class="row">
+                <div class="col-sm-3">
+            <label>{{ field.label }}</label>
+                </div>
+                <div class="col-sm-6">
+            <span>{{ field(**kwargs)|safe }}</span>
+            {% for error in field.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
+            </div>
+            <div class="col-sm-3 collapse" id="{{field.id}}_description">
+            {{ field.description }}
+            </div>
+        </div>
         {% endfor %}
-{% endfor %}
+    </div>
 {% endmacro %}
