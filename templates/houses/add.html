@@ -1,2 +1,12 @@
 <!-- /houses/add -->
 <!-- Create a new house. -->
+
+{% extends 'default.html' %}
+
+{% block body %}
+    <h1>Add A House</h1>
+    <form action="{{ url_for('add_house') }}" method="post">
+    	House Name: <input type="text" name="name" required="true">
+    	<input type="submit" value="Create House">
+    </form>
+{% endblock %}

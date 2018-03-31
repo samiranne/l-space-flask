@@ -1,19 +1,27 @@
-rationalist-library
+L-space
 ===
 
-Distributed library of the rationalist community
+A distributed community library
 
 One-time setup
 ---
+Have Python 3 and pip3 (or whatever will install dependencies for your Python 3 installation).
 
-- Have Python 3
-- Have pip3 (for Python 3) or pip or whatever will install dependencies for your Python 3 installation
-- Install virtualenv
-
+Install virtualenv using pip3:
 ```
 pip3 install virtualenv
+```
+
+Then navigate to the repo and set up your virtual environment using virtualenv: 
+```
 virtualenv .venv
 source .venv/bin/activate # if using a Windows Command Line, run .venv/Scripts/activate instead
+```
+
+Verify that the virtual environment is active by checking that `(.venv)` is prepended to your bash prompt.
+
+Now, install requirements:
+```
 pip3 install -r requirements.txt
 ```
 
@@ -30,7 +38,7 @@ create user library with superuser password 'godrics'
 
 Verify that your database name ("library_dev"), username ("library"), and password ("godrics") match that specified in `SQLALCHEMY_DATABASE_URI` in `config.py`.
 
-Now, set up the tables:
+Now, navigate to the repo and set up the tables:
 
 ```
 python manage.py db migrate # creates migration scripts for tables in models.py

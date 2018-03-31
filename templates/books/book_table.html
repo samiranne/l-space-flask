@@ -12,9 +12,9 @@
 	   <td>{{book.authors}}</td>
 	   {% if show_add_buttons %}
 			<td>
-		   	<form id="{{ book.title }}" class="add-book-form" action="/books/add" method="POST">
-		   		<input type="hidden" id="book" value="{{book}}"/>
-		   		<input type="button" value="Add" onclick="addBook( />
+		   		<form id="form-add{{ book.google_books_id }}" class="add-book-form" action="/books/add" method="POST">
+		   			<input type="hidden" name="book" value="{{book}}"/>
+		   			<button type="button" class="addButton">Add</button>
 		   		</form>
 		   	</td>	   
 	   	{% endif %}
@@ -23,10 +23,23 @@
 </table>
 
 <script>
-	function addBook() {
-
-	}
- // // wait for the DOM to be loaded
+	$(document).ready(function() {
+	    $('.addButton').click(function() {
+	    	debugger;
+	        $.ajax({
+	            url: "{{ url_for('add_book') }}",
+	            data: $('form').serialize(),
+	            type: 'POST',
+	            success: function(response) {
+	                console.log(response);
+	            },
+	            error: function(error) {
+	                console.log(error);
+	            }
+	        });
+	    });
+	});
+ // wait for the DOM to be loaded
  // $(function() {
  // 	alert("Add book clicked");
  //   // bind 'myForm' and provide a simple callback function

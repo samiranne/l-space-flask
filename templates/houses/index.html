@@ -1,2 +1,16 @@
 <!-- /houses/ -->
 <!-- View all houses. -->
+{% extends 'default.html' %}
+
+{% block body %}
+<table class='book-table'>
+	<tr>
+		<th>Houses</th>
+	</tr>
+	{% for house in houses %}
+	<tr>
+	   <td><a href="{{ url_for('house', house_id = house.id) }}">{{house.name}}</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

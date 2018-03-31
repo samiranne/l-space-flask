@@ -51,7 +51,7 @@ class Book(db.Model):
     google_books_id = db.Column(db.String(), unique=True, nullable=False)
     title = db.Column(db.String(), nullable=False)
     authors = db.Column(db.String())
-    thumbnail_link = db.Column(db.String()) 
+    thumbnail_link = db.Column(db.String())
 
     def __repr__(self):
         return 'Book({})'.format(self.title)
@@ -71,7 +71,7 @@ house_users = db.Table('house_users', db.Model.metadata,
 class House(db.Model):
     __tablename__ = 'houses'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String, nullable=False)
     users = db.relationship('User', secondary=house_users, lazy=True,
                            backref=db.backref('users', lazy=True))
 
@@ -79,6 +79,6 @@ class House(db.Model):
     def get_house_by_id(id):
         return House.query.get(id)
 
-    def get_all_books():
+    def get_all_books(self):
         return [] # TODO query join users -> books
         # return Book.query.order_by(Book.title).all()
