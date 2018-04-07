@@ -1,6 +1,7 @@
 from flask import flash, request, redirect, url_for, abort
 from flask import render_template
-from flask.ext.login import login_required, login_user, logout_user
+from flask.ext.login import login_required, login_user, logout_user, \
+    current_user
 from app_factory import app, db, login_manager
 from models import *
 from forms import LoginForm, RegistrationForm
@@ -90,8 +91,16 @@ def search_books():
 
 @app.route('/books/add', methods=['POST'])
 def add_book():
-    logger.debug(request.form)
+    book_params = {k: v for k, v in request.form.items()}
+    book = Book.query.get(google_books_id=book_params['google_books_id'])
+    if book is None:
+        book = Book(**book_params)
+    current_user.books.append(book)
+    db.session.begin()
+    db.session.commit()
     return 'ok'
+
+
 ### HOUSES ###
 
 

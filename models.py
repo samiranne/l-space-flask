@@ -50,7 +50,8 @@ class User(UserMixin, db.Model):
 class Book(db.Model):
     __tablename__ = 'books'
     id = db.Column(db.Integer, primary_key=True)
-    google_books_id = db.Column(db.String(), unique=True, nullable=False)
+    google_books_id = db.Column(db.String(), index=True, unique=True,
+                                nullable=False)
     title = db.Column(db.String(), nullable=False)
     authors = db.Column(db.String())
     thumbnail_link = db.Column(db.String())
