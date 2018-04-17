@@ -104,6 +104,36 @@ a:visited {
 .form .form_field_errors{
     margin: 0px;
 }
+
+.formButton {
+    background-color: #71aae7;
+    color: white;
+    border: none;
+    display: inline-block;
+    padding: 8px 12px;
+}
+
+.previous {
+    background-color: #f1f1f1;
+    color: black;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+.previous:visited {
+    color: black;
+}
+
+.next {
+    background-color: #71aae7;
+    color: white;
+    display: inline-block;
+    padding: 8px 16px;
+}
+.next:visited {
+    color: white;
+}
+
 /*************
 ** TABLES
 **************/
@@ -157,6 +187,7 @@ a:visited {
   	background-color: #262626; /*#5F5F5F*/
     padding: 10px 0px;
     color: white;
+    font-family: "Garamond"
 }
 #navbar h1{
 	margin: 0;
