@@ -83,16 +83,28 @@ def settings():
 @app.route('/books/search', methods=['GET'])
 def search_books():
     query = request.args.get("query")
+    scope = request.args.get("scope")
+    starting_index = request.args.get("starting_index")
+    query_params = google_books_service.format_query_params(query, scope)
+    logger.debug(query_params)
     books = []
+    total_items = 0
+    # TODO: don't display add buttons for books already owned
+    # by current user.
     if query:
-        books = google_books_service.search_books(query)
-    return render_template('books/search.html', books=books)
+        books, total_items = google_books_service.search_books(query_params)
+    return render_template('books/search.html', books=books, query=query,
+                           scope=scope, starting_index=starting_index,
+                           # ending_index=starting_index + len(books),
+                           total_items=total_items)
 
 
 @app.route('/books/add', methods=['POST'])
 def add_book():
     book_params = {k: v for k, v in request.form.items()}
-    book = Book.query.get(google_books_id=book_params['google_books_id'])
+    book = db.session.query(Book).\
+        filter_by(google_books_id=book_params['google_books_id']).\
+        first()
     if book is None:
         book = Book(**book_params)
     current_user.books.append(book)
@@ -150,9 +162,9 @@ def user(user_id):
 
 @app.route('/users/book_copies/<book_copy_id>', methods=['GET'])
 def user_book_copy(book_copy_id):
-    pass 
+    pass
     # TODO:
-    #   Add a unique primary key for user_books table. 
+    #   Add a unique primary key for user_books table.
     #   Get a user_book entry by id, and return it.
     # return render_template('users/book_copy_id.html', book=book)
 

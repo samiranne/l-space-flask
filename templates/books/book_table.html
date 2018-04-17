@@ -7,7 +7,13 @@
 	</tr>
 	{% for book in books %}
 	<tr>
-	   <td><img src="{{ book.thumbnail_link }}" class="thumbnail" /></td>
+	   <td>
+	   		{% if book.thumbnail_link %}
+	   			<img src="{{ book.thumbnail_link }}" class="thumbnail" />
+	   		{% else %}
+	   			No Image Found
+	   		{% endif %}
+	   </td>
 	   <td>{{book.title}}</td>
 	   <td>{{book.authors}}</td>
 	   {% if show_add_buttons %}
@@ -17,7 +23,7 @@
 					<input type="hidden" name="title" value="{{book.title}}"/>
 		   			<input type="hidden" name="authors" value="{{book.authors}}"/>
 		   			<input type="hidden" name="thumbnail_link" value="{{book.thumbnail_link}}"/>
-		   			<button type="button" id="addButton-{{book.google_books_id}}" class="addButton">Add</button>
+		   			<button type="button" id="addButton-{{book.google_books_id}}" class="formButton addButton">Add</button>
 		   		</form>
 		   	</td>	   
 	   	{% endif %}
