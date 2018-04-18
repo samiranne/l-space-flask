@@ -108,7 +108,7 @@ def add_book():
     if book is None:
         book = Book(**book_params)
     current_user.books.append(book)
-    db.session.begin()
+    # db.session.begin()
     db.session.commit()
     return 'ok'
 
@@ -194,7 +194,7 @@ def page_not_found(error):
 
 
 def add_to_database(object):
-    db.session.begin()
+    # db.session.begin()
     db.session.add(object)
     db.session.commit()
 
