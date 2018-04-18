@@ -1,4 +1,4 @@
-"""project_name URL Configuration
+"""l_space URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.0/topics/http/urls/
@@ -17,9 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from l_space import views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('books/', views.get_books, name='get_books'),
 ]
