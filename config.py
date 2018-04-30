@@ -12,7 +12,7 @@ class SiteConfig:
     SITE_KEYWORDS = "library, rationalist"
     SITE_OWNER = "Chelsea Voss and Samira Nedungadi"
 
-    SITE_IMAGE = "img/logo.png"
+    SITE_IMAGE = "img/book_icon.png"
     SITE_IMAGE_WIDTH = 600
     SITE_IMAGE_HEIGHT = 315
 
