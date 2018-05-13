@@ -1,18 +1,21 @@
 from flask.ext.login import UserMixin
 from app_factory import db, bcrypt
+import logging
 
 # Refer to flask documentation on models:
 # http://flask-sqlalchemy.pocoo.org/2.3/models/
 
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 book_users = db.Table('book_users', db.Model.metadata,
                       db.Column('book_id', db.Integer, db.ForeignKey(
                           'books.id'), primary_key=True),
                       db.Column('user_id', db.Integer, db.ForeignKey(
-                          'users.id'), primary_key=True)
-                      # , db.Column('current_holder', db.Integer,
-                      #   db.ForeignKey('users.id'))
-                      )
+                          'users.id'), primary_key=True))
+# , db.Column('current_holder', db.Integer,
+#   db.ForeignKey('users.id'))
 
 
 class User(UserMixin, db.Model):
@@ -36,6 +39,7 @@ class User(UserMixin, db.Model):
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
         self.display_name = display_name
+        self.house = House.first()  # for v1.0, set all houses to Godric's.
 
     def __repr__(self):
         return '<USER:email- {}>'.format(self.email)
@@ -88,4 +92,6 @@ class House(db.Model):
         for user in self.users:
             result.append(user.books)
         return result
-        # return Book.query.order_by(Book.title).all()
+        logger.debug("Users for house {0} are {1}".format(
+                     self.name, self.users))
+        logger.debug("Found {0} books".format(len(result)))

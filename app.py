@@ -24,7 +24,8 @@ logger.setLevel(logging.DEBUG)
 
 @app.route('/')
 def home(name="default", test="default"):
-    return render_template('index.html')
+    books = Book.query.all()
+    return render_template('index.html', books=books)
 
 
 @app.route('/register', methods=['GET', 'POST'])

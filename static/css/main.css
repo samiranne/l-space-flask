@@ -179,6 +179,17 @@ a:visited {
 }
 
 /*************
+** GRID
+**************/
+
+.book-grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-gap: 50px 100px;
+
+}
+
+/*************
 ** HEADER
 **************/
 #header
