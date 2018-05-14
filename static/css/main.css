@@ -19,10 +19,10 @@ body {
 }
 a {
 	text-decoration: none;
-	color: #82C74C;
+	color: #71aae7;
 }
 a:visited {
-	color: #82C74C;
+	color: #71aae7;
 }
 .clearfix::after {
     content: "";
@@ -78,30 +78,62 @@ a:visited {
 }
 .form input {
     display: block;
-    width: calc(100% - 11px);
     height: 40px;
     border-radius: 3px;
     border: 1px solid #B3B3B3;
     font-size: 1em;
     padding-left: 8px;
 }
+.form input[type="text"], .form input[type="password"] {
+    width: 100%;
+}
 
-.form input[type="submit"] {
+/*.form input[type="submit"] {
     margin-top: 10px;
     height: 50px;
     width: 100%;
     font-weight: 400;
-    background-color: #82C74C;
+    background-color: #71aae7;
     color: white;
     cursor: pointer;
 }
 .form input[type="submit"]:hover {
     transition: background-color 0.5s ease;
     background-color: #00A400;
-}
+}*/
 .form .form_field_errors{
     margin: 0px;
 }
+
+.formButton {
+    background-color: #71aae7;
+    color: white;
+    border: none;
+    display: inline-block;
+    padding: 8px 12px;
+}
+
+.previous {
+    background-color: #f1f1f1;
+    color: black;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+.previous:visited {
+    color: black;
+}
+
+.next {
+    background-color: #71aae7;
+    color: white;
+    display: inline-block;
+    padding: 8px 16px;
+}
+.next:visited {
+    color: white;
+}
+
 /*************
 ** TABLES
 **************/
@@ -117,6 +149,19 @@ a:visited {
 .book-table th {
     font-weight: bold;
     background: #F0F0F0;
+}
+
+.table {
+    table-layout: auto;
+    margin: 1em auto;
+    border-collapse: collapse;
+    width: 100%;
+}
+.table td, th {
+    text-align: left;
+}
+.table .absorbing-column {
+    width: 100%;
 }
 
 /*************
@@ -141,11 +186,14 @@ a:visited {
     /* background-image: radial-gradient(circle at center, #262626, #3A3A3A);*/
   	background-color: #262626; /*#5F5F5F*/
     padding: 10px 0px;
+    color: white;
+    font-family: "Garamond"
 }
 #navbar h1{
 	margin: 0;
 	font-weight: 500;
     text-align: center;
+    font-size: 32px;
 }
 #navbar a {
     margin: 5px auto;
@@ -162,7 +210,8 @@ a:visited {
     padding: 10px 0px;
 }
 #navbar a:hover {
-    color: #82C74C;
+    color: #71aae7;
+    text-decoration: none;
 }
 #navbar .main_link {
 	font-weight: bold;
@@ -171,7 +220,7 @@ a:visited {
 	border: 2px solid white;
 }
 #navbar .main_link:hover {
-    border-color: #82C74C;
+    border-color: #71aae7;
 }
 /*************
 ** column
@@ -243,11 +292,11 @@ a:visited {
     }
     #navbar #navigation_auth{
         float: right;
-    }
+    }/*
     .form {
         margin: 100px auto;
         width: 400px;
-    }
+    }*/
     #page-content {
         max-width: 80%;
     }

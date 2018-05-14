@@ -4,10 +4,21 @@
 
 {% block body %}
 <div class="form">
-    <h1>Sign up for an account!</h1>
+    <h1>Sign up</h1>
     <form method="POST" action="{{ url_for('register') }}">
         {{ form_macro.render(form) }}
-        <input type="submit" value="Sign Up">
+	    <input class="btn btn-primary mx-auto" type="submit" value="Sign Up" />
     </form>
 </div>
+
+<script>
+	$('#display_name').focus(function() {
+		$('#display_name_description').fadeIn();
+	})
+	$('#display_name').blur(function() {
+		$('#display_name_description').fadeOut();
+	})
+</script>
+
 {% endblock %}
+

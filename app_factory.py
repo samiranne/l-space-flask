@@ -9,7 +9,8 @@ app = Flask(__name__)
 app.config.from_object(os.environ.get('APP_SETTINGS', DevelopmentConfig))
 app.secret_key = app.config['SECRET_KEY']
 
-db = SQLAlchemy(app, session_options={'autocommit': True})
+# db = SQLAlchemy(app, session_options={'autocommit': True})
+db = SQLAlchemy(app)
 
 bcrypt = Bcrypt(app)
 

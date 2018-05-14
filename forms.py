@@ -8,7 +8,7 @@ class LoginForm(Form):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     password = PasswordField('Password',
-                        validators=[DataRequired(), Length(min=8)])
+                             validators=[DataRequired(), Length(min=8)])
 
     def validate(self):
         form_is_valid = super(LoginForm, self).validate()
@@ -30,6 +30,8 @@ class LoginForm(Form):
 
 
 class RegistrationForm(Form):
+    display_name = StringField('Display Name', validators=[DataRequired()],
+                               description='You can change this at any time.')
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password',
                              validators=[DataRequired(), Length(min=8)])

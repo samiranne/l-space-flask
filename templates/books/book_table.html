@@ -3,18 +3,27 @@
 	<tr>
 		<th></th>
 		<th>Title</th>
-		<th>Authors</th>
+		<th>Author</th>
 	</tr>
 	{% for book in books %}
 	<tr>
-	   <td><img src="{{ book.thumbnail_link }}" class="thumbnail" /></td>
+	   <td>
+	   		{% if book.thumbnail_link %}
+	   			<img src="{{ book.thumbnail_link }}" class="thumbnail" />
+	   		{% else %}
+	   			No Image Found
+	   		{% endif %}
+	   </td>
 	   <td>{{book.title}}</td>
 	   <td>{{book.authors}}</td>
 	   {% if show_add_buttons %}
 			<td>
-		   		<form id="form-add{{ book.google_books_id }}" class="add-book-form" action="/books/add" method="POST">
-		   			<input type="hidden" name="book" value="{{book}}"/>
-		   			<button type="button" class="addButton">Add</button>
+		   		<form id="form-add{{ book.google_books_id }}" data-book-id="{{ book.google_books_id }}" class="add-book-form" action="/books/add" method="POST">
+		   			<input type="hidden" name="google_books_id" value="{{book.google_books_id}}"/>
+					<input type="hidden" name="title" value="{{book.title}}"/>
+		   			<input type="hidden" name="authors" value="{{book.authors}}"/>
+		   			<input type="hidden" name="thumbnail_link" value="{{book.thumbnail_link}}"/>
+		   			<button type="button" id="addButton-{{book.google_books_id}}" class="formButton addButton">Add</button>
 		   		</form>
 		   	</td>	   
 	   	{% endif %}
@@ -25,13 +34,17 @@
 <script>
 	$(document).ready(function() {
 	    $('.addButton').click(function() {
-	    	debugger;
+	    	var buttonId = $(this).attr('id');
 	        $.ajax({
 	            url: "{{ url_for('add_book') }}",
-	            data: $('form').serialize(),
+	            data: $(this).parent().serialize(), 
 	            type: 'POST',
 	            success: function(response) {
 	                console.log(response);
+	                var button = $('#' + buttonId);
+	                var td = button.parent().parent();
+	                button.hide();
+	                td.append("Added");
 	            },
 	            error: function(error) {
 	                console.log(error);
