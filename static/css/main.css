@@ -186,9 +186,11 @@ a:visited {
   display: grid;
   grid-template-columns: auto auto auto auto;
   grid-gap: 50px 100px;
-
 }
 
+.book-grid-item {
+    max-width: 300px;
+}
 /*************
 ** HEADER
 **************/

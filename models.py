@@ -2,20 +2,29 @@ from flask.ext.login import UserMixin
 from app_factory import db, bcrypt
 import logging
 
-# Refer to flask documentation on models:
-# http://flask-sqlalchemy.pocoo.org/2.3/models/
-
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-book_users = db.Table('book_users', db.Model.metadata,
-                      db.Column('book_id', db.Integer, db.ForeignKey(
-                          'books.id'), primary_key=True),
-                      db.Column('user_id', db.Integer, db.ForeignKey(
-                          'users.id'), primary_key=True))
-# , db.Column('current_holder', db.Integer,
-#   db.ForeignKey('users.id'))
+
+class OwnedBookCopy(db.Model):
+    __tablename__ = 'owned_book_copies'
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False,
+                         primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False,
+                        primary_key=True)
+    borrower_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                            nullable=True)
+
+    owner = db.relationship("User", backref=db.backref("owned_book_copies"),
+                            foreign_keys='OwnedBookCopy.owner_id')
+    book = db.relationship("Book", backref=db.backref("owned_book_copies"),
+                           foreign_keys='OwnedBookCopy.book_id')
+
+    def __repr__(self):
+        return "OwnedBookCopy({0}:{1},{2})".format(
+            self.id, self.owner, self.book)
 
 
 class User(UserMixin, db.Model):
@@ -24,8 +33,11 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.LargeBinary(255))
     display_name = db.Column(db.String(), unique=True, nullable=False)
-    books = db.relationship('Book', secondary=book_users, lazy=True,
-                            backref=db.backref('books', lazy=True))
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'),
+                         nullable=False)
+
+    house = db.relationship('House', foreign_keys='User.house_id',
+                            backref=db.backref('users', lazy=True))
 
     @staticmethod
     def get_user_by_email(email):
@@ -39,10 +51,11 @@ class User(UserMixin, db.Model):
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
         self.display_name = display_name
-        self.house = House.first()  # for v1.0, set all houses to Godric's.
+        # for v1.0, set all houses to Godric's.
+        self.house_id = House.query.first().id
 
     def __repr__(self):
-        return '<USER:email- {}>'.format(self.email)
+        return 'User({0}:{1})'.format(self.id, self.display_name)
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password)
@@ -61,37 +74,44 @@ class Book(db.Model):
     thumbnail_link = db.Column(db.String())
 
     def __repr__(self):
-        return 'Book({})'.format(self.title)
+        return 'Book({0}:{1})'.format(self.id, self.title)
 
     @staticmethod
     def get_all_books():
         return Book.query.order_by(Book.title).all()
 
-
-house_users = db.Table('house_users', db.Model.metadata,
-                       db.Column('house_id', db.Integer, db.ForeignKey(
-                           'houses.id'), primary_key=True),
-                       db.Column('user_id', db.Integer, db.ForeignKey(
-                           'users.id'), primary_key=True)
-                       )
+    @staticmethod
+    def get_or_create(google_books_id, **book_params):
+        '''
+        Finds the Book with the given google_books_id.
+        If no such Book is found, creates a new Book
+        using the provided **book_params.
+        :returns: The book
+        '''
+        book = db.session.query(Book).\
+            filter_by(google_books_id=google_books_id).\
+            first()
+        if book is None:
+            book = Book(google_books_id=google_books_id, **book_params)
+            db.session.add(book)
+            db.session.commit()
+        return book
 
 
 class House(db.Model):
     __tablename__ = 'houses'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    users = db.relationship('User', secondary=house_users, lazy=True,
-                            backref=db.backref('users', lazy=True))
+
+    def __repr__(self):
+        return "House({0}:{1})".format(self.id, self.name)
 
     @staticmethod
     def get_house_by_id(id):
         return House.query.get(id)
 
-    def get_all_books(self):
+    def get_all_owned_books(self):
         result = []
         for user in self.users:
-            result.append(user.books)
+            result.extend(user.owned_book_copies)
         return result
-        logger.debug("Users for house {0} are {1}".format(
-                     self.name, self.users))
-        logger.debug("Found {0} books".format(len(result)))

@@ -24,8 +24,11 @@ logger.setLevel(logging.DEBUG)
 
 @app.route('/')
 def home(name="default", test="default"):
-    books = Book.query.all()
-    return render_template('index.html', books=books)
+    house = House.query.first()
+    # For v1.0, redirect to the landing page for the default house
+    if house:
+        return redirect(url_for('house', house_id=house.id))
+    return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -78,10 +81,10 @@ def settings():
     pass  # TODO allow user to get or modify their settings.
 
 
-### BOOKS ###
-
+# BOOKS
 
 @app.route('/books/search', methods=['GET'])
+@login_required
 def search_books():
     query = request.args.get("query")
     scope = request.args.get("scope")
@@ -101,36 +104,31 @@ def search_books():
 
 
 @app.route('/books/add', methods=['POST'])
+@login_required
 def add_book():
     book_params = {k: v for k, v in request.form.items()}
-    book = db.session.query(Book).\
-        filter_by(google_books_id=book_params['google_books_id']).\
-        first()
-    if book is None:
-        book = Book(**book_params)
-    current_user.books.append(book)
-    # db.session.begin()
-    db.session.commit()
+    book = Book.get_or_create(**book_params)
+    owned_copy = OwnedBookCopy(owner_id=current_user.id, book_id=book.id)
+    add_to_database(owned_copy)
     return 'ok'
 
+# HOUSES
 
-### HOUSES ###
 
-
-@app.route('/houses/', methods=['GET'])
+@app.route('/houses', methods=['GET'])
 def houses():
-    # TODO for now, redisrect to Godric's house id page.
+    # TODO for now, redirect to Godric's house id page.
     houses = House.query.all()
     return render_template('houses/index.html', houses=houses)
 
 
 @app.route('/houses/<int:house_id>', methods=['GET'])
 def house(house_id=None):
-    house_books = []
-    if house_id is not None:
-        house = House.get_house_by_id(house_id)
-        house_books = house.get_all_books()
-    return render_template('houses/id.html', house=house, books=house_books)
+    owned_book_copies = []
+    house = House.get_house_by_id(house_id)
+    owned_book_copies = house.get_all_owned_books()
+    return render_template('houses/id.html', house=house,
+                           owned_book_copies=owned_book_copies)
 
 
 @app.route('/houses/<int:house_id>/members', methods=['GET'])
@@ -152,13 +150,14 @@ def add_house():
         #     flash('An error occurred', category='error')
     return render_template('houses/add.html')
 
-### USERS ###
 
+# USERS
 
 @app.route('/users/<user_id>', methods=['GET'])
 def user(user_id):
     user = User.get_user_by_id(user_id)
-    return render_template('users/id.html', user=user)
+    books = [book_copy.book for book_copy in user.owned_book_copies]
+    return render_template('users/id.html', user=user, books=books)
 
 
 @app.route('/users/book_copies/<book_copy_id>', methods=['GET'])
@@ -170,7 +169,7 @@ def user_book_copy(book_copy_id):
     # return render_template('users/book_copy_id.html', book=book)
 
 
-### HANDLERS ###
+# HANDLERS
 
 @login_manager.user_loader
 def load_user(userid):
@@ -195,7 +194,6 @@ def page_not_found(error):
 
 
 def add_to_database(object):
-    # db.session.begin()
     db.session.add(object)
     db.session.commit()
 
