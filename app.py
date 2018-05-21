@@ -107,7 +107,9 @@ def search_books():
 @login_required
 def add_book():
     book_params = {k: v for k, v in request.form.items()}
-    book = Book.get_or_create(**book_params)
+    book = Book.get_from_google_books_id(book_params['google_books_id'])
+    if book is None:
+        book = Book.create(**book_params)
     owned_copy = OwnedBookCopy(owner_id=current_user.id, book_id=book.id)
     add_to_database(owned_copy)
     return 'ok'

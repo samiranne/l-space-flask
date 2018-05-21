@@ -81,20 +81,25 @@ class Book(db.Model):
         return Book.query.order_by(Book.title).all()
 
     @staticmethod
-    def get_or_create(google_books_id, **book_params):
+    def get_from_google_books_id(google_books_id):
         '''
-        Finds the Book with the given google_books_id.
-        If no such Book is found, creates a new Book
-        using the provided **book_params.
-        :returns: The book
+        Returns the Book matching the given google_book_id.
+        If none exists, returns None.
         '''
-        book = db.session.query(Book).\
+        return Book.query.\
             filter_by(google_books_id=google_books_id).\
             first()
-        if book is None:
-            book = Book(google_books_id=google_books_id, **book_params)
-            db.session.add(book)
-            db.session.commit()
+
+    @staticmethod
+    def create(**book_params):
+        '''
+        Creates a new Book using the provided **book_params,
+        and commits it to the db.
+        :returns: The newly-created book
+        '''
+        book = Book(**book_params)
+        db.session.add(book)
+        db.session.commit()
         return book
 
 

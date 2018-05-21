@@ -1,7 +1,7 @@
 """Add 'house_id' column to users table, and drop join table house_users
 
 Revision ID: 6fd667f1d6ae
-Revises: 88008363f357
+Revises: a3e5ffb9c0da
 Create Date: 2018-05-13 13:32:46.377900
 
 """
