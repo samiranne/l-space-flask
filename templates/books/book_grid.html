@@ -1,0 +1,14 @@
+<div class="book-grid-container">
+  {% for book_copy in owned_book_copies %}
+    <div class="book-grid-item">
+    	{% if book_copy.book.thumbnail_link %}
+	   		<img src="{{ book_copy.book.thumbnail_link }}" class="thumbnail" />
+	   	{% else %}
+	   			No Image Found
+	   	{% endif %}
+	   		<h5>{{ book_copy.book.title }}</h5> 
+	   		<div>{{ book_copy.book.authors }}</div>
+	   		<div>owned by <a href="{{ url_for('user', user_id = book_copy.owner.id) }}">{{book_copy.owner.display_name}}</a></div>
+    </div>
+  {% endfor %}
+</div>

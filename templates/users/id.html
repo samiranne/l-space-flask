@@ -5,10 +5,8 @@
 {% extends 'default.html' %}
 
 {% block body %}
-    <h1>User {{user.display_name}} has {{user.books|length}} books.</h1>
-    {% if user.books %}
-    {% with books = user.books %}
+    <h1>User {{user.display_name}} has {{books|length}} books.</h1>
+    {% if books|length > 0 %}
     	{% include 'books/book_table.html' %}
-    {% endwith %}
     {% endif %}
 {% endblock %}
