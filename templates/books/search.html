@@ -10,7 +10,7 @@
     <h1>Add A Book</h1>
     <!-- <p>{{response_body}}</p> -->
     <form action="{{ url_for('search_books') }}">
-    	<input type="text" name="query" value="{{query}}">
+    	<input type="text" name="query" value="{{query if query else ''}}">
         <select name="scope">
             <option value="">all</option>
             <option value="intitle">title</option>
@@ -24,7 +24,7 @@
         {% endwith %}
         <a href="#" class="previous">&laquo; Previous</a>
         <a href="#" class="next">Next &raquo;</a>
-    {% else %}
+    {% elif query %}
         <p>No books found matching '{{query}}'</p>
     {% endif %}
 {% endblock %}
