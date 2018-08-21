@@ -25,7 +25,6 @@ Now, install requirements:
 pip3 install -r requirements.txt
 ```
 
-
 One-time setup for database
 ---
 
@@ -64,12 +63,10 @@ deactivate
 
 To run the app locally
 ---
-TODO: add instructions for how to set up local postgres here, so that you can test creating users etc
 
 ```
 heroku local
 ```
-
 
 Or, run through python:
 
@@ -85,36 +82,47 @@ TODO: run dev env database setup before these will pass
 python3 -m unittest tests.test_app
 ```
 
-To deploy (one-time setup)
+To deploy 
 ---
+
+First, make sure that you have the heroku app added as a git remote:
 
 ```
 heroku git:remote -a rationalist-library
 ```
 
-To deploy (each time)
----
+Once it is set up, use the following command to push commits to heroku:
 
 ```
 git push heroku master
 ```
 
-
-To manage the db
+To manage the production db
 ---
+
+After committing all new migrations, run them on production:
+
 ```
-heroku run "python manage.py db --help"
+heroku run python manage.py db upgrade
 ```
 
-To create the Users table in the prod db, I had to run:
+To connect to and query the production database, run:
+
 ```
-heroku run "python manage.py db upgrade"
+heroku pg:psql
 ```
 
-I expect we'll have to run this after adding any new db models. Note that there
-are alembic upgrade files in migrations/versions that applied these upgrades.
+For either of the above commands, if you get the error `You do not have access to the app project.`, specify the project name (`rationalist-library`) using the `-a` flag.
+
+
+Note that there are alembic upgrade files in migrations/versions that applied these upgrades.
 
 
 View error logs
 ---
+
+```
+heroku logs
+```
+
 https://dashboard.heroku.com/apps/rationalist-library/logs
