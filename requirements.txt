@@ -1,5 +1,5 @@
 alembic==1.0.0
-bcrypt==2.0.0
+bcrypt==3.1.4
 cffi==1.4.2
 Flask==1.0.2
 Flask-Bcrypt==0.7.1
