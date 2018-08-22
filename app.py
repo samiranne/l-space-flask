@@ -1,6 +1,6 @@
 from flask import flash, request, redirect, url_for, abort
 from flask import render_template
-from flask.ext.login import login_required, login_user, logout_user, \
+from flask_login import login_required, login_user, logout_user, \
     current_user
 from app_factory import app, db, login_manager
 from models import *
