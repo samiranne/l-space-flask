@@ -10,10 +10,8 @@ logger.setLevel(logging.DEBUG)
 class OwnedBookCopy(db.Model):
     __tablename__ = 'owned_book_copies'
     id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False,
-                         primary_key=True)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False,
-                        primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
     borrower_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                             nullable=True)
 
