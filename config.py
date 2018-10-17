@@ -8,7 +8,6 @@ class Config(object):
 class SiteConfig:
     # these config values are used in the templates (e.g. open graph, twitter)
     SITE_NAME = "Godric's Hollow Library"
-    # SITE_DESCRIPTION = "This site is a flask template designed for postgres/heroku."
     SITE_KEYWORDS = "library, rationalist"
     SITE_OWNER = "Chelsea Voss and Samira Nedungadi"
 
@@ -24,14 +23,13 @@ class ProductionConfig(Config, SiteConfig):
 
 
 class DevelopmentConfig(Config, SiteConfig):
-    DEBUG = True
     SQLALCHEMY_ECHO = True #prints out the created queries to the terminal
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
 class TestConfig(Config):
-    TEST_DATABASE_STRING = "test.db"
-    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', "postgresql://library:godrics@localhost/library_test")
+    TESTING = True
     SQLALCHEMY_ECHO = False #prints out the created queries to the terminal
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 

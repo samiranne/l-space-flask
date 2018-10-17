@@ -1,89 +1,49 @@
 # run 'python -m unittest test_app.py'
 # 'python -m unittest -v test_app.py' to produce more verbose output
-# pep8 --first app.py
-import pep8
 import unittest
-import logging
 from sqlalchemy.exc import IntegrityError
 from models import User
-from app_factory import db, bcrypt
+from app_factory import create_app
 
 
 class AppTest(unittest.TestCase):
 
+    def add_to_database(self, object):
+        self.db.session.add(object)
+        self.db.session.commit()
+
     def setUp(self):
-        db.session.close()
-        db.drop_all()
-        db.create_all()
-        assert len(User.query.all()) == 0
+        self.app, self.db, self.bcrypt, __ = create_app(testing=True)
+        from models import User, Book, OwnedBookCopy, House
+        self.db.create_all()
 
     def tearDown(self):
-        db.session.close()
-        db.drop_all()
-        db.create_all()
-        assert len(User.query.all()) == 0
-
-    def test_pep8(self):
-        """Test that we conform to PEP8."""
-        pep8style = pep8.StyleGuide()
-        result = pep8style.check_files(['app.py', 'app_factory.py'])
-        self.assertEqual(result.total_errors, 0, "Found code style errors (and warnings).")
+        pass
 
     def test_create_user(self):
-        email = 'test_email'
+        name = 'test_user'
+        email = 'user@test.test'
         password = 'test_password'
-        user = User(email=email, password=password)
-        add_to_database(user)
+        user = User(display_name=name, email=email, password=password)
+        self.add_to_database(user)
 
-        assert user in db.session
-
-        assert len(User.query.filter_by(email=email).all()) == 1
+        self.assertTrue(user in self.db.session)
+        user_by_display_name = User.query.filter_by(display_name=name).all()
+        self.assertEqual(len(user_by_display_name), 1)
         user_from_db = User.get_user_by_email(email)
-        assert user_from_db.email == email
-        assert user_from_db.check_password(password)
-        user_from_db.set_password("newpassword")
-        db.session.commit()
+        self.assertEqual(user_from_db.email, email)
+        self.assertEqual(user_from_db.display_name, name)
 
-        assert len(User.query.filter_by(email=email).all()) == 1
-        user_from_db2 = User.get_user_by_email(email)
-        assert user_from_db2.email == email
-        assert user_from_db2.check_password("newpassword")
-
-    def test_get_user_by_id(self):
-        email = 'test_email'
-        password = 'test_password'
-        user = User(email=email, password=password)
-        add_to_database(user)
-        assert user in db.session
-
-        assert len(User.query.filter_by(id=1).all()) == 1
-        user_from_db = User.get_user_by_id(1)
-        assert user_from_db.email == email
-
-    def test_user_already_exists_raises_integrity_error(self):
-        add_to_database(User(email='email', password='password'))
-        l = lambda: add_to_database(User(email='email', password='another'))
+    def test_error_when_creating_user_with_existing_email(self):
+        self.add_to_database(User(display_name='user', email='email', password='password'))
+        l = lambda: self.add_to_database(User(display_name='user2', email='email', password='password2'))
         self.assertRaises(IntegrityError, l)
 
     def test_user_doesnt_exist_returns_none(self):
         user = User.get_user_by_email("bla")
-        assert user is None
+        self.assertIs(user, None)
         user2 = User.get_user_by_id(100000)
-        assert user2 is None
-
-    def test_user_incorrect_password(self):
-        email = 'email'
-        password = 'password'
-        add_to_database(User(email=email, password=password))
-        user = User.get_user_by_email(email)
-        assert user.password != password
-        assert not bcrypt.check_password_hash(user.password, 'temp')
-        assert bcrypt.check_password_hash(user.password, password)
-
-
-def add_to_database(object):
-    db.session.add(object)
-    db.session.commit()
+        self.assertIs(user2, None)
 
 if __name__ == '__main__':
     unittest.main()
