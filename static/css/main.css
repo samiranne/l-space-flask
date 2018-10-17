@@ -105,7 +105,7 @@ a:visited {
     margin: 0px;
 }
 
-.formButton {
+.form-button {
     background-color: #71aae7;
     color: white;
     border: none;
@@ -134,6 +134,9 @@ a:visited {
     color: white;
 }
 
+.search-bar {
+    margin-bottom: 15px;
+}
 /*************
 ** TABLES
 **************/

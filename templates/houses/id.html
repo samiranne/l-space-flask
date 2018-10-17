@@ -5,9 +5,9 @@
 
 {% block body %}
     <h1>{{house.name}}'s Books</h1>
-    <form>
+    <form class="search-bar">
     	<input type="text" name="query">
-    	<input type="submit" value="Search">
+    	<input class="form-button" type="submit" value="Search">
     </form>
     {% if owned_book_copies %}
     	{% include 'books/book_grid.html' %}

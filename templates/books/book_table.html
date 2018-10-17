@@ -23,7 +23,7 @@
 					<input type="hidden" name="title" value="{{book.title}}"/>
 		   			<input type="hidden" name="authors" value="{{book.authors}}"/>
 		   			<input type="hidden" name="thumbnail_link" value="{{book.thumbnail_link}}"/>
-		   			<button type="button" id="addButton-{{book.google_books_id}}" class="formButton addButton">Add</button>
+		   			<button type="button" id="add-button-{{book.google_books_id}}" class="form-button add-button">Add</button>
 		   		</form>
 		   	</td>	   
 	   	{% endif %}
@@ -33,7 +33,7 @@
 
 <script>
 	$(document).ready(function() {
-	    $('.addButton').click(function() {
+	    $('.add-button').click(function() {
 	    	var buttonId = $(this).attr('id');
 	        $.ajax({
 	            url: "{{ url_for('add_book') }}",

@@ -5,14 +5,14 @@
 {% block body %}
     <h1>Add A Book</h1>
     <!-- <p>{{response_body}}</p> -->
-    <form action="{{ url_for('search_books') }}">
+    <form class="search-bar" action="{{ url_for('search_books') }}">
     	<input type="text" name="query" value="{{query if query else ''}}">
         <select name="scope">
             <option value="">all</option>
             <option value="intitle">title</option>
             <option value="inauthor">author</option>
         </select>
-    	<input type="submit" class="formButton" value="Search">
+    	<input type="submit" class="form-button" value="Search">
     </form>
     {% if books %}
         {% with show_add_buttons = True %}
