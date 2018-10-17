@@ -31,8 +31,8 @@ One-time setup for database
 Install Postgres 10. Once it's installed, run `psql`. (On Windows, you will first need to add C:\Program Files\PostgreSQL\10\scripts to your path, and then run the command `runpsql`). You will be prompted to enter a server, database, port and username. Use the defaults provided by the prompts. Then run:
 
 ```
-create database library_dev
-create user library with superuser password 'godrics'
+create database library_dev;
+create user library with superuser password 'godrics';
 ```
 
 Verify that your database name ("library_dev"), username ("library"), and password ("godrics") match that specified in `SQLALCHEMY_DATABASE_URI` in `config.py`.
@@ -112,10 +112,10 @@ To connect to and query the production database, run:
 heroku pg:psql
 ```
 
-For either of the above commands, if you get the error `You do not have access to the app project.`, specify the project name (`rationalist-library`) using the `-a` flag.
+For either of the above commands, if you get the error `You do not have access to the app project.`, specify the project name (`l-space`) using the `-a` flag.
 
 
-Note that there are alembic upgrade files in migrations/versions that applied these upgrades.
+Note that there are alembic upgrade scripts in migrations/versions that applied these upgrades.
 
 
 View error logs
