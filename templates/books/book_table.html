@@ -7,26 +7,29 @@
 	</tr>
 	{% for book in books %}
 	<tr>
-	   <td>
-	   		{% if book.thumbnail_link %}
-	   			<img src="{{ book.thumbnail_link }}" class="thumbnail" />
-	   		{% else %}
-	   			No Image Found
+		<td>
+			{% if book.thumbnail_link %}
+				<img src="{{ book.thumbnail_link }}" class="thumbnail" />
+			{% else %}
+				No Image Found
+			{% endif %}
+		</td>
+		<td>{{book.title}}</td>
+		<td>{{book.authors}}</td>
+		<td>
+	   		<form id="form-add{{ book.google_books_id }}" data-book-id="{{ book.google_books_id }}" class="add-book-form" action="/books/add" method="POST">
+	   			<input type="hidden" name="google_books_id" value="{{book.google_books_id}}"/>
+				<input type="hidden" name="title" value="{{book.title}}"/>
+	   			<input type="hidden" name="authors" value="{{book.authors}}"/>
+	   			<input type="hidden" name="thumbnail_link" value="{{book.thumbnail_link}}"/>
+	   			<button type="button" id="add-button-{{book.google_books_id}}" class="form-button add-button">Add</button>
+	   		</form>
+	   	</td>
+	   	<td class="added-status">
+	   		{% if book.google_books_id in owned_google_book_ids %}
+	   			Added
 	   		{% endif %}
-	   </td>
-	   <td>{{book.title}}</td>
-	   <td>{{book.authors}}</td>
-	   {% if show_add_buttons %}
-			<td>
-		   		<form id="form-add{{ book.google_books_id }}" data-book-id="{{ book.google_books_id }}" class="add-book-form" action="/books/add" method="POST">
-		   			<input type="hidden" name="google_books_id" value="{{book.google_books_id}}"/>
-					<input type="hidden" name="title" value="{{book.title}}"/>
-		   			<input type="hidden" name="authors" value="{{book.authors}}"/>
-		   			<input type="hidden" name="thumbnail_link" value="{{book.thumbnail_link}}"/>
-		   			<button type="button" id="add-button-{{book.google_books_id}}" class="form-button add-button">Add</button>
-		   		</form>
-		   	</td>	   
-	   	{% endif %}
+	   	</td>	   
 	</tr>
 	{% endfor %}
 </table>
@@ -42,9 +45,9 @@
 	            success: function(response) {
 	                console.log(response);
 	                var button = $('#' + buttonId);
-	                var td = button.parent().parent();
-	                button.hide();
-	                td.append("Added");
+	                var td = button.closest('tr').find(".added-status");
+	                // button.hide();
+	                td.html("Added");
 	            },
 	            error: function(error) {
 	                console.log(error);
@@ -52,13 +55,5 @@
 	        });
 	    });
 	});
- // wait for the DOM to be loaded
- // $(function() {
- // 	alert("Add book clicked");
- //   // bind 'myForm' and provide a simple callback function
- //   $('.add-book-form').ajaxForm(function() {
- //       alert("Book added!");
- //   });
- // });
 </script>
 </body>

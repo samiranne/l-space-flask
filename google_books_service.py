@@ -16,6 +16,32 @@ def format_query_params(query, scope=None):
         return "{0}:{1}".format(scope, query)
 
 
+def clean_up_results(query_results, owned_book_google_ids):
+    '''
+    Google Books' database contains duplicates (multiple results with
+    the same title and author, but different ISBNs and Google Book IDs).
+    We want to filter out these duplicates, but make sure we show the versions
+    that are owned by the current user.
+    '''
+    logger.debug("Cleaning up results")
+    title_author_to_book_mapping = {}
+    for book in query_results:
+        title_author = f"{book.title}_{book.authors}"
+        if title_author in title_author_to_book_mapping:
+            # We've seen this book already. So, skip it, unless
+            # this version of the book is the version that the user
+            # owns, in which case replace the other version with
+            # this one.
+            if book.google_books_id in owned_book_google_ids:
+                title_author_to_book_mapping[title_author] = book
+            else:
+                logger.debug(
+                    f"Skipping book {title_author} because it is a duplicate")
+        else:
+            title_author_to_book_mapping[title_author] = book
+    return title_author_to_book_mapping.values()
+
+
 def search_books(query_params):
     books = []
     total_items = 0
@@ -41,9 +67,10 @@ def search_books(query_params):
                 image_links = volume_info.get("imageLinks")
                 thumbnail_link = image_links.get(
                     'thumbnail') if image_links else None
-                books.append(Book(title=title, google_books_id=google_books_id,
-                                  authors=author_string,
-                                  thumbnail_link=thumbnail_link))
+                book = Book(title=title, google_books_id=google_books_id,
+                            authors=author_string,
+                            thumbnail_link=thumbnail_link)
+                books.append(book)
         return books, total_items
     else:
         # todo what exception should be raised here?

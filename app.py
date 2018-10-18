@@ -90,17 +90,18 @@ def search_books():
     scope = request.args.get("scope")
     starting_index = request.args.get("starting_index")
     query_params = google_books_service.format_query_params(query, scope)
-    logger.debug(query_params)
     books = []
     total_items = 0
-    # TODO: don't display add buttons for books already owned
-    # by current user.
+    owned_google_book_ids = [book_copy.book.google_books_id for book_copy in
+                             current_user.owned_book_copies]
     if query:
         books, total_items = google_books_service.search_books(query_params)
+    books = google_books_service.clean_up_results(books, owned_google_book_ids)
     return render_template('books/search.html', books=books, query=query,
                            scope=scope, starting_index=starting_index,
                            # ending_index=starting_index + len(books),
-                           total_items=total_items)
+                           total_items=total_items,
+                           owned_google_book_ids=owned_google_book_ids)
 
 
 @app.route('/books/add', methods=['POST'])
@@ -158,8 +159,8 @@ def add_house():
 @app.route('/users/<user_id>', methods=['GET'])
 def user(user_id):
     user = User.get_user_by_id(user_id)
-    books = [book_copy.book for book_copy in user.owned_book_copies]
-    return render_template('users/id.html', user=user, books=books)
+    return render_template('users/id.html', user=user,
+                           owned_book_copies=user.owned_book_copies)
 
 
 @app.route('/users/book_copies/<book_copy_id>', methods=['GET'])

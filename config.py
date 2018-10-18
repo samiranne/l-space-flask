@@ -23,7 +23,8 @@ class ProductionConfig(Config, SiteConfig):
 
 
 class DevelopmentConfig(Config, SiteConfig):
-    SQLALCHEMY_ECHO = True #prints out the created queries to the terminal
+    DEBUG = True
+    SQLALCHEMY_ECHO = False #prints out the created queries to the terminal
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 

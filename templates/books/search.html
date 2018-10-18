@@ -14,10 +14,8 @@
         </select>
     	<input type="submit" class="form-button" value="Search">
     </form>
-    {% if books %}
-        {% with show_add_buttons = True %}
+    {% if books|length > 0 %}
     	   {% include 'books/book_table.html' %}
-        {% endwith %}
         <a href="#" class="previous">&laquo; Previous</a>
         <a href="#" class="next">Next &raquo;</a>
     {% elif query %}
