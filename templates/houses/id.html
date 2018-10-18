@@ -10,7 +10,10 @@
     	<input class="form-button" type="submit" value="Search">
     </form>
     {% if owned_book_copies %}
-    	{% include 'books/book_grid.html' %}
+      {% with %}
+        {% set show_owner = true %}
+          {% include 'books/book_grid.html' %}
+      {% endwith %}
    	{% else %}
    		<p>This house hasn't listed any books yet :(</p>
   	{% endif %}

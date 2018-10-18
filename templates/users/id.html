@@ -7,6 +7,10 @@
 {% block body %}
     <h1>User {{user.display_name}} has {{owned_book_copies|length}} books.</h1>
     {% if owned_book_copies|length > 0 %}
-    	{% include 'books/book_grid.html' %}
+    {% with %}
+    	{% set show_owner = false %}
+    	{% set show_remove_buttons = (current_user.id == user.id) %}
+    		{% include 'books/book_grid.html' %}
+    {% endwith %}
     {% endif %}
 {% endblock %}

@@ -24,6 +24,10 @@ class OwnedBookCopy(db.Model):
         return "OwnedBookCopy({0}:{1},{2})".format(
             self.id, self.owner, self.book)
 
+    @staticmethod
+    def get_owned_book_copy_by_id(id):
+        return OwnedBookCopy.query.filter_by(id=id).first()
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'

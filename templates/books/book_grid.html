@@ -8,7 +8,36 @@
 	   	{% endif %}
 	   		<h5>{{ book_copy.book.title }}</h5> 
 	   		<div>{{ book_copy.book.authors }}</div>
+	   	{% if show_owner %}
 	   		<div>owned by <a href="{{ url_for('user', user_id = book_copy.owner.id) }}">{{book_copy.owner.display_name}}</a></div>
+	   	{% endif %}
+	   	{% if show_remove_buttons %}
+	   		<form id="form-remove-{{book_copy.id}}" class="remove-book-form" action="/owned_book_copies/id" method="DELETE">
+	   			<button type="button" data-id="{{book_copy.id}}" id="remove-button-{{book_copy.id}}" class="form-button remove-button">Remove</button>
+	   		</form>
+	   	{% endif %}
     </div>
   {% endfor %}
 </div>
+
+<script>
+	$(document).ready(function() {
+	    $('.remove-button').click(function() {
+	    	var buttonId = $(this).attr('id');
+	    	var ownedBookCopyId = $(this).data('id');
+	        $.ajax({
+	            url: `/owned_book_copies/${ownedBookCopyId}`,
+	            type: 'DELETE',
+	            success: function(response) {
+	                console.log(response);
+	                var button = $('#' + buttonId);
+	                button.closest(".book-grid-item").hide();
+	                td.html("Removed");
+	            },
+	            error: function(error) {
+	                console.log(error);
+	            }
+	        });
+	    });
+	});
+</script>

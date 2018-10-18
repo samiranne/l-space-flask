@@ -104,9 +104,9 @@ def search_books():
                            owned_google_book_ids=owned_google_book_ids)
 
 
-@app.route('/books/add', methods=['POST'])
+@app.route('/owned_book_copies', methods=['POST'])
 @login_required
-def add_book():
+def create_owned_book_copy():
     book_params = {k: v for k, v in request.form.items()}
     book = Book.get_from_google_books_id(book_params['google_books_id'])
     if book is None:
@@ -114,6 +114,17 @@ def add_book():
     owned_copy = OwnedBookCopy(owner_id=current_user.id, book_id=book.id)
     add_to_database(owned_copy)
     return 'ok'
+
+
+@app.route('/owned_book_copies/<int:owned_book_copy_id>', methods=['DELETE'])
+@login_required
+def delete_owned_book_copy(owned_book_copy_id):
+    owned_book_copy = OwnedBookCopy.get_owned_book_copy_by_id(
+        id=owned_book_copy_id)
+    if owned_book_copy:
+        delete_from_database(owned_book_copy)
+    return 'ok'
+
 
 # HOUSES
 
@@ -127,8 +138,9 @@ def houses():
 
 @app.route('/houses/<int:house_id>', methods=['GET'])
 def house(house_id=None):
-    owned_book_copies = []
     house = House.get_house_by_id(house_id)
+    if house is None:
+        return page_not_found()
     owned_book_copies = house.get_all_owned_books()
     return render_template('houses/id.html', house=house,
                            owned_book_copies=owned_book_copies)
@@ -137,6 +149,8 @@ def house(house_id=None):
 @app.route('/houses/<int:house_id>/members', methods=['GET'])
 def house_members(house_id):
     house = House.get_house_by_id(house_id)
+    if house is None:
+        return page_not_found()
     house_members = house.members
     return render_template('houses/members.html', members=house_members)
 
@@ -159,17 +173,10 @@ def add_house():
 @app.route('/users/<user_id>', methods=['GET'])
 def user(user_id):
     user = User.get_user_by_id(user_id)
+    if user is None:
+        return page_not_found()
     return render_template('users/id.html', user=user,
                            owned_book_copies=user.owned_book_copies)
-
-
-@app.route('/users/book_copies/<book_copy_id>', methods=['GET'])
-def user_book_copy(book_copy_id):
-    pass
-    # TODO:
-    #   Add a unique primary key for user_books table.
-    #   Get a user_book entry by id, and return it.
-    # return render_template('users/book_copy_id.html', book=book)
 
 
 # HANDLERS
@@ -186,7 +193,7 @@ def unauthorized():
 
 
 @app.errorhandler(404)
-def page_not_found(error):
+def page_not_found(error=None):
     return render_template('page_not_found.html'), 404
 
 
@@ -200,6 +207,9 @@ def add_to_database(object):
     db.session.add(object)
     db.session.commit()
 
+def delete_from_database(object):
+    db.session.delete(object)
+    db.session.commit()
 
 if __name__ == '__main__':
     print("DATABASE_URL: " + app.config['SQLALCHEMY_DATABASE_URI'])
