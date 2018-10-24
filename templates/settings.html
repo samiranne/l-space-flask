@@ -1,2 +1,12 @@
-<!-- /settings -->
-<!-- If logged in, view and change your user settings -->
+{% extends 'default.html' %}
+{% import "form.html" as form_macro %}
+
+{% block body %}
+<div class="form">
+    <h1>Account</h1>
+    <form method="POST" action="{{ url_for('settings') }}">
+    	{{ form_macro.render(user_account_form) }}
+        <input class="btn btn-primary mx-auto" type="submit" value="Save">
+    </form>
+</div>
+{% endblock %}

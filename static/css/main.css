@@ -88,6 +88,10 @@ a:visited {
     width: 100%;
 }
 
+.form .btn {
+    margin: 15px 0px 15px 0px;
+}
+
 /*.form input[type="submit"] {
     margin-top: 10px;
     height: 50px;

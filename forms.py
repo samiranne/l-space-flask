@@ -51,3 +51,36 @@ class RegistrationForm(Form):
             return False
 
         return True
+
+
+class UpdateUserAccountForm(Form):
+    display_name = StringField('Display Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    current_password = PasswordField('Current Password', validators=[DataRequired(), Length(min=8)])
+    new_password = PasswordField('New Password',
+                             validators=[DataRequired(), Length(min=8)])
+    new_password_confirm = PasswordField('Confirm New Password',
+                            validators=[DataRequired(), EqualTo('new_password')])
+
+    def __init__(self, user, *args, **kwargs):
+        super(UpdateUserAccountForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    def pre_populate(self):
+        '''
+        Pre-populates the form's display name and email with the user's display name and email.
+        :return:
+        '''
+        self.display_name.data = self.user.display_name
+        self.email.data = self.user.email
+
+
+    def validate(self):
+        form_is_valid = super(UpdateUserAccountForm, self).validate()
+        if not form_is_valid:
+            return False
+        if not self.user.check_password(self.current_password.data):
+            self.current_password.errors.append('Incorrect password.')
+            return False
+
+        return True

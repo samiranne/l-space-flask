@@ -4,7 +4,7 @@ from flask_login import login_required, login_user, logout_user, \
     current_user
 from app_factory import app, db, login_manager
 from models import *
-from forms import LoginForm, RegistrationForm
+from forms import LoginForm, RegistrationForm, UpdateUserAccountForm
 import google_books_service
 import logging
 
@@ -12,18 +12,8 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-# @app.before_request
-# def before_request():
-#     pass
-
-
-# @app.after_request
-# def after_request(response):
-#     return response
-
-
 @app.route('/')
-def home(name="default", test="default"):
+def home():
     house = House.query.first()
     # For v1.0, redirect to the landing page for the default house
     if house:
@@ -34,7 +24,7 @@ def home(name="default", test="default"):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit():
         user = User(email=form.email.data, password=form.password.data,
                     display_name=form.display_name.data)
         add_to_database(user)
@@ -47,15 +37,11 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate_on_submit():
         user = User.get_user_by_email(form.email.data)
         login_user(user, remember=True)
-
         next = request.args.get('next')
-        # WE ARE CURRRENTLY ASSUMING 'next' IS VALID. IF PERMISSIONS ARE ADDED
-        # LATER, THEN WE SHOULD ADD ADDITIONAL VALIDATION
-
         return redirect(next or url_for('home'))
     return render_template('login.html', form=form)
 
@@ -78,10 +64,22 @@ def app_default():
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    pass  # TODO allow user to get or modify their settings.
-
+    form = UpdateUserAccountForm(current_user, request.form)
+    if request.method == 'POST' and form.validate_on_submit():
+        user = User.get_user_by_id(form.user.id)
+        user.email = form.email.data
+        user.display_name = form.display_name.data
+        if not user.check_password(form.new_password.data):
+            logger.debug("Updating user password")
+            user.set_password(form.new_password.data)
+        add_to_database(user)
+        flash("Your changes have been saved", category='success')
+    elif request.method == 'GET':
+        form.pre_populate() # pre-populate with the user's current display name, etc
+    return render_template('settings.html', user_account_form=form) #user=current_user)
 
 # BOOKS
+
 
 @app.route('/books/search', methods=['GET'])
 @login_required
