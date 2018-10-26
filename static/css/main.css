@@ -29,6 +29,12 @@ a:visited {
     display: table;
     clear: both;
 }
+.float-right {
+    float: right;
+}
+.hidden {
+    display: none;
+}
 /*************
 ** FLASH
 **************/
@@ -288,6 +294,14 @@ a:visited {
 }
 .column-item p{
     margin: 0px 0px;
+}
+
+/*************
+** DESCRIPTION LIST
+**************/
+.dt-label {
+    font-weight: normal;
+    text-align: left;
 }
 
 /*************

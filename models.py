@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 from app_factory import db, bcrypt
 import logging
+import datetime
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -29,17 +30,31 @@ class OwnedBookCopy(db.Model):
         return OwnedBookCopy.query.filter_by(id=id).first()
 
 
+class HouseMembershipRequests(db.Model):
+    __tablename__ = "house_membership_requests"
+    id = db.Column(db.Integer, primary_key=True)
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=False)
+    member_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_date = db.Column(db.Date, nullable=False, default=datetime.datetime.now)
+
+class HouseMembers(db.Model):
+    __tablename__ = 'house_members'
+    id = db.Column(db.Integer, primary_key=True)
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=False)
+    member_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    is_admin = db.Column(db.Boolean)
+    # house = db.relationship('House', db.ForeignKey('houses.id'),
+    #                         backref=db.backref('house_members', lazy=True))
+    # member = db.relationship('User', backref=db.backref("house_members"),
+    #                         foreign_keys='HouseMembers.member_id')
+    # TODO: try and make above work; currently get a foreign_key error
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.LargeBinary(255))
     display_name = db.Column(db.String(), unique=True, nullable=False)
-    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'),
-                         nullable=False)
-
-    house = db.relationship('House', foreign_keys='User.house_id',
-                            backref=db.backref('users', lazy=True))
 
     @staticmethod
     def get_user_by_email(email):
@@ -119,6 +134,8 @@ class House(db.Model):
 
     def get_all_owned_books(self):
         result = []
-        for user in self.users:
+        house_members = HouseMembers.query.filter_by(house_id=self.id)
+        for house_member in house_members:
+            user = User.query.filter_by(id = house_member.member_id).first()
             result.extend(user.owned_book_copies)
         return result

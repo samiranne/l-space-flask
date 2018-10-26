@@ -9,4 +9,97 @@
         <input class="btn btn-primary mx-auto" type="submit" value="Save">
     </form>
 </div>
+<hr>
+<div class="form">
+    <div class="container">
+    <dl>
+        <div class="row" id="display-house">
+            <div class="col-sm-3">
+                <dt class="dt-label">House</dt>
+            </div>
+            <div class="col-sm-3">
+                <dd class="dt-label">{{ house.name }}</dd>
+            </div>
+            <div class="col-sm-3">
+                <button id="change-house" class="btn btn-primary mr-0 my-0 float-right">Change</button>
+            </div>
+        </div>
+    </dl>
+        <form id="request-house-change-form">
+            <div class="row hidden" id="edit-house">
+                <div class="col-sm-3">
+                    <label>House</label>
+                </div>
+                <div class="col-sm-3">
+                    <select name="house_id">
+                        {% for house in houses %}
+                            <option value="{{ house.id }}">{{ house.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <input type="submit" value="Request To Join" id="request-house-change" class="btn btn-primary mr-0 my-0 float-right"/>
+                </div>
+            </div>
+        </form>
+        <div class="row hidden" id="request-success-message">
+            Request sent. Your request will be reviewed by the house admins.<a href="#" id="cancel-request" class="ml-2">Cancel request</a>
+        </div>
+        <div class="row hidden" id="cancel-success-message">
+            Request canceled.
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    $(document).ready(function() {
+    var requestId;
+    $('#change-house').click(function() {
+        var buttonId = $(this).attr('id');
+        let cancelSuccessMessage = $('#cancel-success-message');
+        cancelSuccessMessage.addClass('hidden');
+        var displayHouseRow = $('#display-house');
+        displayHouseRow.toggleClass('hidden');
+        var editHouseRow = $('#edit-house');
+        editHouseRow.toggleClass('hidden');
+        });
+    $('#cancel-request').click(function() {
+        $.ajax({
+            url: `/house_membership_requests/${requestId}`,
+            type: 'DELETE',
+            success: function(response) {
+                console.log(response);
+                let cancelSuccessMessage = $('#cancel-success-message');
+                cancelSuccessMessage.toggleClass('hidden');
+                let requestSuccessMessage = $('#request-success-message');
+                requestSuccessMessage.toggleClass('hidden');
+                var displayHouseRow = $('#display-house');
+                displayHouseRow.toggleClass('hidden');
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+    $('#request-house-change-form').submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "{{ url_for('house_membership_requests') }}",
+            data: $(this).closest('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+                let requestSuccessMessage = $('#request-success-message');
+                requestSuccessMessage.toggleClass('hidden');
+                requestId = JSON.parse(response)["requestId"];
+                var editHouseRow = $('#edit-house');
+                editHouseRow.toggleClass('hidden');
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
 {% endblock %}

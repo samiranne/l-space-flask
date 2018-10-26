@@ -7,6 +7,7 @@ from models import *
 from forms import LoginForm, RegistrationForm, UpdateUserAccountForm
 import google_books_service
 import logging
+import json
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -66,20 +67,37 @@ def app_default():
 def settings():
     form = UpdateUserAccountForm(current_user, request.form)
     if request.method == 'POST' and form.validate_on_submit():
-        user = User.get_user_by_id(form.user.id)
-        user.email = form.email.data
-        user.display_name = form.display_name.data
-        if not user.check_password(form.new_password.data):
-            logger.debug("Updating user password")
-            user.set_password(form.new_password.data)
-        add_to_database(user)
+        current_user.email = form.email.data
+        current_user.display_name = form.display_name.data
+        if not current_user.check_password(form.new_password.data): # if new password != current password
+            current_user.set_password(form.new_password.data)
+        add_to_database(current_user)
         flash("Your changes have been saved", category='success')
     elif request.method == 'GET':
         form.pre_populate() # pre-populate with the user's current display name, etc
-    return render_template('settings.html', user_account_form=form) #user=current_user)
+    houses = House.query.all()
+    house_membership = HouseMembers.query.filter_by(member_id=current_user.id).first()
+    house = House.query.filter_by(id=house_membership.house_id).first()
+    return render_template('settings.html', user_account_form=form, house=house, houses=houses)
+
+
+@app.route('/house_membership_requests', methods=['POST'])
+@login_required
+def house_membership_requests():
+    request_body = {k: v for k, v in request.form.items()}
+    membership_request = HouseMembershipRequests(house_id=request_body['house_id'], member_id=current_user.id)
+    add_to_database(membership_request)
+    return json.dumps({ 'requestId' : membership_request.id })
+
+@app.route('/house_membership_requests/<int:request_id>', methods=['DELETE'])
+@login_required
+def delete_house_membership_request(request_id):
+    membership_request = HouseMembershipRequests.query.filter_by(id=request_id).first()
+    if membership_request:
+        delete_from_database(membership_request)
+    return 'ok'
 
 # BOOKS
-
 
 @app.route('/books/search', methods=['GET'])
 @login_required
