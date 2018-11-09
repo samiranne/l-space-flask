@@ -1,0 +1,16 @@
+<div id="membership-request-container">
+    {% if membership_requests|length %}
+        {% for membership_request in membership_requests %}
+                <form id="accept-request" class="membership-requests-grid">
+                    <div>{{ membership_request.user.display_name }}</div>
+                    <input type="hidden" name="house_id" value="{{ membership_request.house_id }}"/>
+                    <input type="hidden" name="user_id" value="{{ membership_request.user_id }}"/>
+                    <input type="hidden" class="request-id" name="request_id" value="{{ membership_request.id }}"/>
+                    <input type="submit" class="js-membership-request-accept" value="Accept"/>
+                    <input type="submit" class="js-membership-request-reject" value="Reject"/>
+                </form>
+        {% endfor %}
+    {% else %}
+        No active membership requests.
+    {% endif %}
+</div>

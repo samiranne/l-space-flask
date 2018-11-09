@@ -76,8 +76,8 @@ def settings():
     elif request.method == 'GET':
         form.pre_populate() # pre-populate with the user's current display name, etc
     houses = House.query.all()
-    house_membership = HouseMembers.query.filter_by(member_id=current_user.id).first()
-    house = House.query.filter_by(id=house_membership.house_id).first()
+    house_membership = HouseMembership.query.filter_by(user_id=current_user.id).first()
+    house = House.query.filter_by(id=house_membership.house_id).first() if house_membership else None
     return render_template('settings.html', user_account_form=form, house=house, houses=houses)
 
 
@@ -85,9 +85,22 @@ def settings():
 @login_required
 def house_membership_requests():
     request_body = {k: v for k, v in request.form.items()}
-    membership_request = HouseMembershipRequests(house_id=request_body['house_id'], member_id=current_user.id)
+    membership_request = HouseMembershipRequests(house_id=request_body['house_id'], user_id=current_user.id)
     add_to_database(membership_request)
     return json.dumps({ 'requestId' : membership_request.id })
+
+@app.route('/house_membership_requests', methods=['GET'])
+@login_required
+def get_house_membership_requests():
+    current_house_membership = HouseMembership.query.filter_by(user_id=current_user.id).first()
+    if current_house_membership.is_admin:
+        membership_requests = current_house_membership.house.house_membership_requests
+        template = 'houses/membership_requests.html' if request.is_xhr else "admin_settings.html"
+        return render_template(template, membership_requests=membership_requests)
+    else:
+        flash(message='You must be the admin of a house to do that.', category='error')
+        return 403
+
 
 @app.route('/house_membership_requests/<int:request_id>', methods=['DELETE'])
 @login_required
@@ -95,7 +108,27 @@ def delete_house_membership_request(request_id):
     membership_request = HouseMembershipRequests.query.filter_by(id=request_id).first()
     if membership_request:
         delete_from_database(membership_request)
+        flash("Successfully rejected.")
     return 'ok'
+
+@app.route('/house_memberships', methods=['POST'])
+@login_required
+def add_house_membership_from_membership_request():
+    logger.debug({k: v for k, v in request.form.items()})
+    membership_request_dict = {k: v for k, v in request.form.items()}
+    user_id, house_id = membership_request_dict['user_id'], membership_request_dict['house_id']
+    membership_request = HouseMembershipRequests.query.filter_by(house_id=house_id, user_id=user_id).first()
+    existing_house_membership = HouseMembership.query.filter_by(user_id=user_id).first()
+    if existing_house_membership:
+        logger.debug(f"User {user_id} was already found to be in house {existing_house_membership.house_id};"
+                     + " deleting existing relation")
+        delete_from_database(existing_house_membership)
+    new_house_membership = HouseMembership(house_id=house_id,
+                                        user_id=user_id)
+    add_to_database(new_house_membership)
+    delete_from_database(membership_request)
+    return 'ok'
+
 
 # BOOKS
 

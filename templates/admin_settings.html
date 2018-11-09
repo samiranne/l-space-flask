@@ -1,0 +1,58 @@
+{% extends 'default.html' %}
+{% import "form.html" as form_macro %}
+
+
+{% block body %}
+    {% include "houses/membership_requests.html" %}
+{% endblock %}
+
+{% block scripts %}
+    $(document).ready(function() {
+        $('.js-membership-request-accept').click(function(e) {
+            e.preventDefault();
+            var buttonId = $(this).attr('id');
+            $.ajax({
+                url: "{{ url_for('add_house_membership_from_membership_request') }}",
+                data: $(this).parent().serialize(),
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                    repopulateMembershipRequests();
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+        $('.js-membership-request-reject').click(function(e) {
+            e.preventDefault();
+            let requestId = $(this).siblings(".request-id").val();
+            alert(requestId);
+            $.ajax({
+                url: `house_membership_requests/${requestId}`,
+                type: 'DELETE',
+                success: function(response) {
+                    console.log(response);
+                    repopulateMembershipRequests();
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+        function repopulateMembershipRequests() {
+            $.ajax({
+                url: "{{ url_for('house_membership_requests') }}",
+                type: "GET",
+                success: function(response) {
+                    console.log(response);
+                    $('#membership-request-container').html(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+{% endblock %}
+

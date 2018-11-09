@@ -13,6 +13,9 @@
             <a href="{{ url_for('user', user_id=current_user.id) }}">My Books</a>
             <a href="{{ url_for('search_books') }}">Add A Book</a>
             <a href="{{ url_for('settings') }}">Settings</a>
+            {% if current_user.house_membership|length > 0 and current_user.house_membership[0].is_admin %}
+                <a href="{{ url_for('get_house_membership_requests') }}">House Settings</a>
+            {% endif %}
             <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
             <a href="{{ url_for('login') }}">Login</a>

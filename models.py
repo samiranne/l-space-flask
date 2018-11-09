@@ -34,20 +34,24 @@ class HouseMembershipRequests(db.Model):
     __tablename__ = "house_membership_requests"
     id = db.Column(db.Integer, primary_key=True)
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=False)
-    member_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_date = db.Column(db.Date, nullable=False, default=datetime.datetime.now)
+    house = db.relationship('House',
+                            backref=db.backref('house_membership_requests', lazy=True))
+    user = db.relationship('User',
+                            backref=db.backref('house_membership_requests'))
 
-class HouseMembers(db.Model):
-    __tablename__ = 'house_members'
+class HouseMembership(db.Model):
+    __tablename__ = 'house_memberships'
     id = db.Column(db.Integer, primary_key=True)
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=False)
-    member_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     is_admin = db.Column(db.Boolean)
-    # house = db.relationship('House', db.ForeignKey('houses.id'),
-    #                         backref=db.backref('house_members', lazy=True))
-    # member = db.relationship('User', backref=db.backref("house_members"),
-    #                         foreign_keys='HouseMembers.member_id')
-    # TODO: try and make above work; currently get a foreign_key error
+    house = db.relationship('House',
+                            backref=db.backref('house_memberships', lazy=True))
+    user = db.relationship('User', backref=db.backref("house_membership"),
+                            foreign_keys='HouseMembership.user_id')
+    # TODO this is being treated as a one-to-many relationship, where user.house_membership is a list. fix this
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -134,8 +138,6 @@ class House(db.Model):
 
     def get_all_owned_books(self):
         result = []
-        house_members = HouseMembers.query.filter_by(house_id=self.id)
-        for house_member in house_members:
-            user = User.query.filter_by(id = house_member.member_id).first()
-            result.extend(user.owned_book_copies)
+        for house_membership in self.house_memberships:
+            result.extend(house_membership.user.owned_book_copies)
         return result
