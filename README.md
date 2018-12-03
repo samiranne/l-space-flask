@@ -88,7 +88,7 @@ To deploy
 First, make sure that you have the heroku app added as a git remote:
 
 ```
-heroku git:remote -a rationalist-library
+heroku git:remote -a l-space
 ```
 
 Once it is set up, use the following command to push commits to heroku:
