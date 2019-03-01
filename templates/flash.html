@@ -3,12 +3,8 @@
     {% if category == 'success' %}
     	{% set alert_class = 'success' %}
     {% else %}
-    	{% set alert_class = 'danger' %}
-            <div class="alert alert-{{alert_class}}"><span class="align-center">{{ message }}</span><span class="align-right">x</span></div>
+    	{% set alert_class = 'error' %}
     {% endif %}
+        <div class="flash alert alert-{{alert_class}}"><span>{{ message }}</span><button class="flash-dismiss">×</button></div>
     {% endfor %}
 {% endwith %}
-{#
-<div class="alert alert-success"><span class="align-center">test flash message 1</span><span class="align-right">x</span></div>
-<div class="alert alert-danger"><span class="align-center">test flash message 2</span><span class="align-right">x</span></div>
-#}

@@ -2,7 +2,7 @@
 
 $( document ).ready(function() {
     // REMOVE FLASH MESSAGE ON CLICK
-    $( ".flash .align-right" ).click(function() {
+    $( ".flash-dismiss" ).click(function() {
         $(this).parent().remove();
     });
 

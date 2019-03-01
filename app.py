@@ -72,7 +72,7 @@ def settings():
         if not current_user.check_password(form.new_password.data): # if new password != current password
             current_user.set_password(form.new_password.data)
         add_to_database(current_user)
-        flash("Your changes have been saved", category='success')
+        flash("Your changes have been saved", 'success')
     elif request.method == 'GET':
         form.pre_populate() # pre-populate with the user's current display name, etc
     houses = House.query.all()
@@ -88,6 +88,7 @@ def house_membership_requests():
     membership_request = HouseMembershipRequests(house_id=request_body['house_id'], user_id=current_user.id)
     add_to_database(membership_request)
     return json.dumps({ 'requestId' : membership_request.id })
+
 
 @app.route('/house_membership_requests', methods=['GET'])
 @login_required
@@ -204,18 +205,16 @@ def house_members(house_id):
     return render_template('houses/members.html', members=house_members)
 
 
-@app.route('/houses/add', methods=['GET', 'POST'])
+@app.route('/houses', methods=['POST'])
 def add_house():
-    if request.method == 'POST':
-        # try:
-        house_name = request.form['name']
-        house = House(name=house_name)
-        add_to_database(house)
-        flash('Created a new house "%s"' % house_name, category='success')
-        # except: # TODO what exceptions to catch here?
-        #     flash('An error occurred', category='error')
-    return render_template('houses/add.html')
-
+    # try:
+    house_name = request.form['name']
+    house = House(name=house_name)
+    add_to_database(house)
+    flash('Created a new house "%s"' % house_name, category='success')
+    # except: # TODO what exceptions to catch here?
+    #     flash('An error occurred', category='error')
+    return 'ok'
 
 # USERS
 

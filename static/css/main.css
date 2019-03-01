@@ -39,33 +39,37 @@ a:visited {
 ** FLASH
 **************/
 .flash {
-    padding: 5px 10px;
-    height: 35px;
+    padding: 10px;
     color: white;
-    background-color: #D74038;
     border: 1px solid white;
-    display: block;
-    clear: both;
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
-.flash.success {
+.flash.alert-success {
     background-color: #00B15A;
 }
-.align-left {
-    float: left;
-    width:15%;
-    text-align:left;
+
+.flash.alert-error {
+    background-color: #D74038;
 }
-.align-center {
-    float: left;
-    width:70%;
-    text-align:center;
+
+.flash-dismiss {
+    border: none;
+    background  : rgba(255, 255, 255, .2);
+    border-radius: 10%;
 }
-.align-right {
-    float: left;
-    width:15%;
-    text-align:right;
-    cursor: pointer;
+
+.flash-dismiss:hover {
+    background  : rgba(255, 255, 255, .4);
+    border: none;
 }
+
+.flash-dismiss:active {
+    background  : rgba(0, 0, 0, .2);
+}
+
+
+
 /*************
 ** FORMS
 **************/
