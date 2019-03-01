@@ -15,7 +15,7 @@ pip3 install virtualenv
 Then navigate to the repo and set up your virtual environment using virtualenv: 
 ```
 virtualenv .venv
-source .venv/bin/activate # if using a Windows Command Line, run .venv/Scripts/activate instead
+source .venv/bin/activate # if using a Windows Command Line, run '.venv\Scripts\activate' instead
 ```
 
 Verify that the virtual environment is active by checking that `(.venv)` is prepended to your bash prompt.
@@ -71,8 +71,11 @@ heroku local
 Or, run through python:
 
 ```
-python app.py # On Windows, use py -3 app.py
+python app.py 
 ```
+
+You can then connect at `localhost:5000`.
+
 
 To run the tests
 ---
