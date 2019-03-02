@@ -124,7 +124,7 @@ a:visited {
 }
 
 .form-button {
-    background-color: #71aae7;
+    background-color: #066;
     color: white;
     border: none;
     display: inline-block;
@@ -143,7 +143,7 @@ a:visited {
 }
 
 .next {
-    background-color: #71aae7;
+    background-color: #066;
     color: white;
     display: inline-block;
     padding: 8px 16px;
@@ -154,6 +154,14 @@ a:visited {
 
 .search-bar {
     margin-bottom: 15px;
+}
+
+.btn-primary {
+    background-color: #066;
+    color: white;
+    border: none;
+    display: inline-block;
+    padding: 8px 12px;
 }
 /*************
 ** TABLES
@@ -222,8 +230,7 @@ a:visited {
 **************/
 #header
 {
-    /* background-image: radial-gradient(circle at center, #262626, #3A3A3A);*/
-  	background-color: #262626; /*#5F5F5F*/
+  	background-color: #144;
     padding: 10px 0px;
     color: white;
     font-family: "Garamond"
