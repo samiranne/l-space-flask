@@ -53,6 +53,10 @@ a:visited {
     background-color: #D74038;
 }
 
+.flash.alert-message {
+    background-color: #335555;
+}
+
 .flash-dismiss {
     border: none;
     background  : rgba(255, 255, 255, .2);

@@ -2,8 +2,10 @@
     {% for category, message in messages %}
     {% if category == 'success' %}
     	{% set alert_class = 'success' %}
-    {% else %}
+    {% elif category == 'error' %}
     	{% set alert_class = 'error' %}
+    {% else %}
+        {% set alert_class = 'message' %}
     {% endif %}
         <div class="flash alert alert-{{alert_class}}"><span>{{ message }}</span><button class="flash-dismiss">×</button></div>
     {% endfor %}

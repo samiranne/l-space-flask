@@ -36,6 +36,10 @@
                             <option value="{{ house.id }}">{{ house.name }}</option>
                         {% endfor %}
                     </select>
+                    <input type="text" class="hidden"/>
+                </div>
+                <div class="col-sm-3">
+                    <input class="btn btn-primary my-0" value="+" id="add-new-house">
                 </div>
                 <div class="col-sm-3">
                     <input type="submit" value="Request To Join" id="request-house-change" class="btn btn-primary mr-0 my-0 float-right"/>
@@ -94,6 +98,25 @@
                 requestId = JSON.parse(response)["requestId"];
                 var editHouseRow = $('#edit-house');
                 editHouseRow.toggleClass('hidden');
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+    $('#add-new-house').click(function() {
+        $.ajax({
+            url: "{{ url_for('add_house') }}",
+            data: $(this).closest('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+                letSuccessMessage = $('#cancel-success-message');
+                cancelSuccessMessage.toggleClass('hidden');
+                let requestSuccessMessage = $('#request-success-message');
+                requestSuccessMessage.toggleClass('hidden');
+                var displayHouseRow = $('#display-house');
+                displayHouseRow.toggleClass('hidden');
             },
             error: function(error) {
                 console.log(error);
