@@ -208,7 +208,13 @@ def house(house_id=None):
     house = House.get_house_by_id(house_id)
     if house is None:
         return page_not_found()
-    owned_book_copies = house.get_all_owned_books()
+    search_string = request.args.get("query")
+    if search_string is not None:
+        owned_book_copies = OwnedBookCopy.get_by_house(
+            house, book_search_string=search_string
+        ).all()
+    else:
+        owned_book_copies = OwnedBookCopy.get_by_house(house)
     return render_template("houses/id.html", house=house, owned_book_copies=owned_book_copies)
 
 
