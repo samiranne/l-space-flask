@@ -9,6 +9,7 @@ class SiteConfig:
     # these config values are used in the templates (e.g. open graph, twitter)
     SITE_NAME = "L-space"
     SITE_KEYWORDS = "library, books"
+    SITE_DESCRIPTION = "A distributed community library"
     SITE_OWNER = "Samira Nedungadi"
 
     SITE_IMAGE = "img/book_icon.png"

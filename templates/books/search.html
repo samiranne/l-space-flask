@@ -3,7 +3,7 @@
 {% extends 'default.html' %}
 
 {% block body %}
-    <h1>Add A Book</h1>
+    <h1>Search for a book to add to your collection</h1>
     <!-- <p>{{response_body}}</p> -->
     <form class="search-bar" action="{{ url_for('search_books') }}">
     	<input type="text" name="query" value="{{query if query else ''}}">

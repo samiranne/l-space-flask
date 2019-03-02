@@ -1,3 +1,23 @@
 <header id="header" class="clearfix">
-    {% include "navbar.html" %}
+    <div id="navbar">
+        <a class="site-title navbar-content" href="{{ url_for('home') }}">{{ config.SITE_NAME }}</a>
+        <span class="site-subtitle navbar-content">{{ config.SITE_DESCRIPTION }}</span>
+
+        <div id="navigation_auth">
+            {% if current_user.is_authenticated %}
+                <span class="navbar-content">Logged in as {{current_user.display_name}}.</span>
+                <span class="navbar-content"><a href="{{ url_for('user', user_id=current_user.id) }}">My Books</a></span>
+                <span class="navbar-content"><a href="{{ url_for('search_books') }}">Add A Book</a></span>
+                <span class="navbar-content"><a href="{{ url_for('settings') }}">Settings</a></span>
+                <!--{% if current_user.house_membership|length > 0 and current_user.house_membership[0].is_admin %}-->
+                    <!--<a class="navbar-content" href="{{ url_for('get_house_membership_requests') }}">House Settings</a>-->
+                <!--{% endif %}-->
+                <span class="navbar-content"><a href="{{ url_for('logout') }}">Logout</a></span>
+            {% else %}
+            <span class="navbar-content"><a href="{{ url_for('login') }}">Login</a></span>
+            <span class="navbar-content"><a class="main_link" href="{{ url_for('register') }}">Sign up</a></span>
+            <!--<span class="navbar-content"><a class="inline-link" href="{{ url_for('login') }}">Login</a> or <a class="inline-link" href="{{ url_for('register') }}">sign up</a> to add your own books!</span>-->
+            {% endif %}
+        </div>
+    </div>
 </header>

@@ -5,7 +5,7 @@
 {% extends 'default.html' %}
 
 {% block body %}
-    <h1>User {{user.display_name}} has {{owned_book_copies|length}} books.</h1>
+    <h1>{{user.display_name}} has {{owned_book_copies|length}} books.</h1>
     {% if owned_book_copies|length > 0 %}
     {% with %}
     	{% set show_owner = false %}
