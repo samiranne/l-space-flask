@@ -12,7 +12,6 @@ class LoginForm(Form):
 
     def validate(self):
         form_is_valid = super(LoginForm, self).validate()
-
         if not form_is_valid:
             return False
 
